@@ -4,8 +4,6 @@
 
 This project presents a design concept for an automated data pipeline tailored for the pharmaceutical and medical device industries. The pipeline transforms raw clinical data from diverse sources—including EDC, EHR, laboratory systems, wearables, manual uploads (e.g., CSVs), and APIs—into CDISC SDTM-compliant datasets. By automating data processing, compliance validation, and output generation, this pipeline streamlines workflows and ensures high-quality, compliant datasets for clinical trials.
 
-I’m always learning and open to feedback. Feel free to explore the project’s code and contribute on [GitHub Link].
-
 ---
 
 ## Architecture Diagram
