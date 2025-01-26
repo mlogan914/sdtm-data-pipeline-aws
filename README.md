@@ -103,7 +103,6 @@ The pipeline is built using AWS services to orchestrate data transformation, int
 - Step Functions orchestrate the upload of transformed, SDTM-compliant datasets to the output S3 bucket in multiple formats:
   - CSV
   - Parquet
-  - SAS7BDAT
   - XPT
 
 ---
