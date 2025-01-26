@@ -25,6 +25,8 @@ The pipeline leverages AWS services to orchestrate data transformation, integrat
 
 ### Infrastructure as Code
 - **Terraform**: Used for provisioning scalable, reusable, and automated infrastructure.
+#### Directory Structure
+--> insert tree here
 
 ### Compliance Validation
 - **Pinnacle21 CLI**: Integrated for CDISC compliance checks, ensuring adherence to regulatory standards. Future iterations will address broader regulatory compliance and full domain coverage.
