@@ -14,7 +14,7 @@ This project presents a design concept for an automated data pipeline tailored f
 ## Key Features
 
 ### AWS Services
-The pipeline leverages AWS services to orchestrate data transformation, integration, and processing:
+The pipeline is built using AWS services to orchestrate data transformation, integration, and processing:
 - **S3**: For raw data storage, staging, and final outputs.
 - **Step Functions**: To manage and orchestrate the pipeline stages.
 - **Glue**: For metadata management, data quality checks, and centralized metadata repository updates.
