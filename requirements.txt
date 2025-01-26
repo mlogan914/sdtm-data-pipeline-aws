@@ -1,0 +1,5 @@
+pandas==1.5.3
+pyreadstat==1.2.8
+pyarrow==12.0.0
+
+
