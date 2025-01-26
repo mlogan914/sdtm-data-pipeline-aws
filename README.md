@@ -33,9 +33,9 @@ The pipeline is built using AWS services to orchestrate data transformation, int
 - **AWS Glue**: Centralized metadata repository to ensure consistent data lineage and visibility across pipeline stages.
 
 ### Error Handling & Data Quality
-- Robust error handling and data quality checks ensure reliability.
+- Error handling and data quality checks ensure reliability.
 - Data anonymization is supported to comply with privacy regulations.
-- Flexible output formats: CSV, Parquet, SAS7BDAT, and XPT.
+- Flexible output formats: CSV, Parquet, and XPT.
 
 ### CI/CD
 - **GitHub Actions**: Implements CI/CD workflows for automated deployment of transformation scripts to AWS ECS.
@@ -80,7 +80,7 @@ The pipeline is built using AWS services to orchestrate data transformation, int
 - Step Functions trigger AWS ECS to execute transformation scripts on the raw data using custom code.
 
 #### Version Control
-- ECS tasks dynamically pull the latest version of scripts from GitHub for processing.
+- ECS tasks pull the latest version of scripts from GitHub for processing.
 
 ---
 
