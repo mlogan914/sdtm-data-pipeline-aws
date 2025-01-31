@@ -19,27 +19,41 @@ resource "aws_ecs_cluster" "ecs_cluster" {
 
 # ---------------------------------------
 # ECS Task Definition(s)
+# This defines the transform and validation containers.
 # ---------------------------------------
 resource "aws_ecs_task_definition" "ecs_task" {
   family                   = "sdtm-task-5201201"
-  container_definitions    = jsonencode([{
-    name      = "sdtm-container-5201201",
-    image     = "${aws_ecr_repository.ecs_repo.repository_url}:latest",
-    memory    = 512,
-    cpu       = 256,
-    essential = true,
-    portMappings = [{
-      containerPort = 80
-      hostPort      = 80
-    }]
-  }])
+  container_definitions    = jsonencode([
+    {
+      name      = "sdtm-container-5201201-transform",
+      image     = "${aws_ecr_repository.ecs_repo.repository_url}:latest",  # Update to different images if necessary
+      memory    = 512,
+      cpu       = 256,
+      essential = true,
+      portMappings = [{
+        containerPort = 80
+        hostPort      = 80
+      }]
+    },
+    {
+      name      = "sdtm-container-5201201-validate",
+      image     = "${aws_ecr_repository.ecs_repo.repository_url}:latest",  # If different images, specify here
+      memory    = 512,
+      cpu       = 256,
+      essential = true,
+      portMappings = [{
+        containerPort = 8080  # Different port if needed for the validation task
+        hostPort      = 8080
+      }]
+    }
+  ])
   
   requires_compatibilities = ["FARGATE"]
   network_mode             = "awsvpc"
   execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
   task_role_arn            = aws_iam_role.ecs_task_execution_role.arn
-  memory                   = "512"
-  cpu                      = "256"
+  memory                   = "1024"  # Total memory for both containers
+  cpu                      = "512"   # Total CPU for both containers
 }
 
 # ---------------------------------------
