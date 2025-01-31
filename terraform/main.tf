@@ -49,11 +49,14 @@ module "sns" {
   source = "./sns"
 }
 
-# ECS Module: Orchestrates containers for main data processing
-# module "ecs" {
-#   source = "./ecs"
-# }
+module "vpc" {
+  source = "./vpc"
+}
 
-# module "vpc" {
-#   source = "./vpc"
-# }
+# ECS Module: Orchestrates containers for main data processing
+module "ecs" {
+  source          = "./ecs"
+  vpc_id          = module.vpc.vpc_id # Pass the VPC ID here
+  private_subnets = module.vpc.private_subnets
+}
+

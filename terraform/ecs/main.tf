@@ -43,6 +43,31 @@ resource "aws_ecs_task_definition" "ecs_task" {
 }
 
 # ---------------------------------------
+# Create a Security Group
+# ---------------------------------------
+
+# Adjust if needed
+resource "aws_security_group" "ecs_sg" {
+  name        = "ecs-sg-5201201"
+  description = "Allow inbound traffic to ECS containers"
+  vpc_id      = var.vpc_id
+
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"] # Adjust if you want specific IPs
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"] # Needed for ECR, S3, Logs, etc.
+  }
+}
+
+# ---------------------------------------
 # Create and ECS Service
 # ---------------------------------------
 resource "aws_ecs_service" "ecs_service" {
@@ -53,30 +78,10 @@ resource "aws_ecs_service" "ecs_service" {
   launch_type     = "FARGATE"
 
   network_configuration {
-    subnets         = ["subnet-xxxxxxx", "subnet-yyyyyyy"] # Replace with your subnets
-    security_groups = [aws_security_group.example.id]
-    assign_public_ip = true
+    subnets         = var.private_subnets
+    security_groups = [aws_security_group.ecs_sg.id]
+    assign_public_ip = false
   }
 }
 
-# ---------------------------------------
-# Create a Security Group
-# ---------------------------------------
-resource "aws_security_group" "ecs_sg" {
-  name        = "ecs-sg-5201201"
-  description = "Allow inbound traffic to ECS containers"
 
-  ingress {
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-}
