@@ -82,7 +82,6 @@ resource "aws_nat_gateway" "nat" {
 # Route Table
 # Tell private subnets to use the NAT Gateway for outbound traffic
 #-------------------------------------------------------------------
-
 resource "aws_route_table" "private" {
   vpc_id = aws_vpc.main.id
 
