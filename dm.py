@@ -3,10 +3,18 @@ from datetime import datetime
 import pyarrow as pa
 import pyarrow.parquet as pq
 import pyreadstat
-# import os
+import boto3
+from datetime import datetime
+import os
 
-# # Set the working directory to a desired path
-# os.chdir('/home/mlogan/projects/cdisc')
+# Set the working directory to a desired path
+os.chdir('/home/mlogan/projects/cdisc')
+
+# Initialize S3 client
+s3 = boto3.client('s3')
+
+# Set S3 bucket name
+bucket_name = 'oper-5201201'
 
 # Read the raw CSV data, ensuring all columns are read as strings
 df = pd.read_csv('raw_dm.csv', dtype=str)
@@ -97,5 +105,10 @@ pq.write_table(table, 'dm.parquet')
 
 # Output the transformed data to XPT format (using pyreadstat)
 pyreadstat.write_xport(transformed_df, 'dm.xpt')
+
+# Upload files to S3
+s3.upload_file('dm.csv', bucket_name, 'dm.csv')
+s3.upload_file('dm.parquet', bucket_name, 'dm.parquet')
+s3.upload_file('dm.xpt', bucket_name, 'dm.xpt')
 
 print("Data transformation complete and saved in CSV, Parquet, and XPT formats.")

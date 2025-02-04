@@ -90,6 +90,40 @@ resource "aws_s3_bucket_policy" "scripts-bucket-policy" {
     ]
   })
 }
+
+# ----------------------------------------
+# Operational Bucket
+# ----------------------------------------
+resource "aws_s3_bucket" "oper-bucket" {
+  bucket = var.oper_bucket_name
+
+  tags = var.tags
+}
+
+# Oper Bucket policy
+resource "aws_s3_bucket_policy" "oper-bucket-policy" {
+  bucket = aws_s3_bucket.oper-bucket.id
+
+  policy = jsonencode({
+    "Version" = "2012-10-17"
+    "Statement" = [
+      {
+        "Effect"    = "Allow"
+        "Action"    = "s3:PutObject"
+        "Resource"  = "${aws_s3_bucket.oper-bucket.arn}/*"
+        "Principal" = {
+          "Service" = "ecs-tasks.amazonaws.com"
+        }
+        "Condition" = {
+          "StringEquals" = {
+            "aws:RequestedRegion" = "us-west-1" # Restricting to the region where ECS is running
+          }
+        }
+      }
+    ]
+  })
+}
+
 # ----------------------------------------
 # Output Bucket
 # ----------------------------------------

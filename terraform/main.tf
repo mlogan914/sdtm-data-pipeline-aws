@@ -8,6 +8,7 @@ module "s3" {
   source              = "./s3"
   raw_bucket_name     = "raw-prd-5201201"
   scripts_bucket_name = "scripts-5201201"
+  oper_bucket_name    = "oper-5201201"
 
   tags = {
     "Project"     = "SDTM-52012-01"
