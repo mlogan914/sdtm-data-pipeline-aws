@@ -58,8 +58,6 @@ The pipeline is built using AWS services to orchestrate data transformation, int
     │   ├── main.tf               # Step Functions definition
     │   ├── roles.tf              # IAM roles for Step Functions
     │   └── variables.tf          # Step Functions variables
-    ├── terraform.tfstate         # Terraform state file
-    ├── terraform.tfstate.backup  # Backup state file
     └── vpc                       # VPC infrastructure
         ├── main.tf               # VPC configuration
         └── outputs.tf            # VPC output configuration
