@@ -10,9 +10,6 @@ COPY requirements.txt .
 # Install the dependencies from the requirements.txt
 RUN pip install --upgrade pip && pip install --no-cache-dir -r requirements.txt
 
-# Upgrade numpy, pandas and pyarrow to ensure compatibility
-RUN pip install --upgrade numpy pandas pyarrow
-
 # Set a non-root user
 RUN useradd --create-home appuser
 USER appuser
