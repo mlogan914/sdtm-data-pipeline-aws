@@ -6,11 +6,11 @@
 # ---------------------------------------
 # Create an ECR Repository
 # ---------------------------------------
-resource "aws_ecr_repository" "ecs_repo_transform" {
+resource "aws_ecr_repository" "ecr_repo_transform" {
   name = "ecr-repo-520120-transform"
 }
 
-resource "aws_ecr_repository" "ecs_repo_validate" {
+resource "aws_ecr_repository" "ecr_repo_validate" {
   name = "ecr-repo-520120-validate"
 }
 
@@ -30,7 +30,7 @@ resource "aws_ecs_task_definition" "ecs_task" {
   container_definitions    = jsonencode([
     {
       name      = "sdtm-container-5201201-transform",
-      image     = "${aws_ecr_repository.ecs_repo_transform.repository_url}:latest",  # Update to different images if necessary
+      image     = "${aws_ecr_repository.ecr_repo_transform.repository_url}:latest",  # Update to different images if necessary
       memory    = 512,
       cpu       = 256,
       essential = true,
@@ -41,7 +41,7 @@ resource "aws_ecs_task_definition" "ecs_task" {
     },
     {
       name      = "sdtm-container-5201201-validate",
-      image     = "${aws_ecr_repository.ecs_repo_validate.repository_url}:latest",  # If different images, specify here
+      image     = "${aws_ecr_repository.ecr_repo_validate.repository_url}:latest",  # If different images, specify here
       memory    = 512,
       cpu       = 256,
       essential = true,

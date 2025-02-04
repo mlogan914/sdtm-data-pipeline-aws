@@ -8,6 +8,11 @@ variable "scripts_bucket_name" {
   description = "The name of the S3 bucket for scripts"
 }
 
+variable "oper_bucket_name" {
+  type        = string
+  description = "The name of the S3 bucket for operational files"
+}
+
 #  variable "output_bucket_name" {
 #    type        = string
 #    description = "The name of the S3 bucket for output"
