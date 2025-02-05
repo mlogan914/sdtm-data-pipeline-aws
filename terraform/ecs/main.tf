@@ -22,12 +22,27 @@ resource "aws_ecs_cluster" "ecs_cluster" {
 }
 
 # ---------------------------------------
+# Create CloudWatch Log Groups
+# ---------------------------------------
+resource "aws_cloudwatch_log_group" "ecs_log_group_transform" {
+  name = "/ecs/sdtm-task-5201201-transform"
+
+  retention_in_days = 30
+}
+
+resource "aws_cloudwatch_log_group" "ecs_log_group_validate" {
+  name = "/ecs/sdtm-task-5201201-validate"
+
+  retention_in_days = 30
+}
+
+# ---------------------------------------
 # ECS Task Definition(s)
 # This defines the transform and validation containers.
 # ---------------------------------------
 
 resource "aws_ecs_task_definition" "ecs_task_transform" {
-  family                   = "sdtm-task-5201201"
+  family                   = "sdtm-task-transform"
   container_definitions    = jsonencode([
     {
       name      = "sdtm-container-5201201-transform",
@@ -42,7 +57,7 @@ resource "aws_ecs_task_definition" "ecs_task_transform" {
       logConfiguration = {
         logDriver = "awslogs"
         options = {
-          awslogs-group         = "/ecs/sdtm-task-5201201"
+          awslogs-group         = "${aws_cloudwatch_log_group.ecs_log_group_transform.name}"
           awslogs-region        = "us-west-1" # Change to your region
           awslogs-stream-prefix = "ecs"
         }
@@ -58,7 +73,7 @@ resource "aws_ecs_task_definition" "ecs_task_transform" {
 }
 
 resource "aws_ecs_task_definition" "ecs_task_validate" {
-  family                   = "sdtm-task-5201201"
+  family                   = "sdtm-task-validate"
   container_definitions    = jsonencode([
     {
       name      = "sdtm-container-5201201-validate",
@@ -69,7 +84,15 @@ resource "aws_ecs_task_definition" "ecs_task_validate" {
       portMappings = [{
         containerPort = 8080  # Different port if needed for the validation task
         hostPort      = 8080
-      }]
+      }],
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          awslogs-group         = "${aws_cloudwatch_log_group.ecs_log_group_validate.name}"
+          awslogs-region        = "us-west-1" # Change to your region
+          awslogs-stream-prefix = "ecs"
+        }
+      }
     }
   ])
   
@@ -108,30 +131,30 @@ resource "aws_security_group" "ecs_sg" {
 # ---------------------------------------
 # Create and ECS Service
 # ---------------------------------------
-resource "aws_ecs_service" "ecs_service_transform" {
-  name            = "ecs-service-5201201-transform"
-  cluster         = aws_ecs_cluster.ecs_cluster.id
-  task_definition = aws_ecs_task_definition.ecs_task_transform.arn
-  desired_count   = 1
-  launch_type     = "FARGATE"
+# resource "aws_ecs_service" "ecs_service_transform" {
+#   name            = "ecs-service-5201201-transform"
+#   cluster         = aws_ecs_cluster.ecs_cluster.id
+#   task_definition = aws_ecs_task_definition.ecs_task_transform.arn
+#   desired_count   = 1
+#   launch_type     = "FARGATE"
 
-  network_configuration {
-    subnets         = var.private_subnets
-    security_groups = [aws_security_group.ecs_sg.id]
-    assign_public_ip = false
-  }
-}
+#   network_configuration {
+#     subnets         = var.private_subnets
+#     security_groups = [aws_security_group.ecs_sg.id]
+#     assign_public_ip = false
+#   }
+# }
 
-resource "aws_ecs_service" "ecs_service_validate" {
-  name            = "ecs-service-5201201-validate"
-  cluster         = aws_ecs_cluster.ecs_cluster.id
-  task_definition = aws_ecs_task_definition.ecs_task_validate.arn
-  desired_count   = 1
-  launch_type     = "FARGATE"
+# resource "aws_ecs_service" "ecs_service_validate" {
+#   name            = "ecs-service-5201201-validate"
+#   cluster         = aws_ecs_cluster.ecs_cluster.id
+#   task_definition = aws_ecs_task_definition.ecs_task_validate.arn
+#   desired_count   = 1
+#   launch_type     = "FARGATE"
 
-  network_configuration {
-    subnets         = var.private_subnets
-    security_groups = [aws_security_group.ecs_sg.id]
-    assign_public_ip = false
-  }
-}
+#   network_configuration {
+#     subnets         = var.private_subnets
+#     security_groups = [aws_security_group.ecs_sg.id]
+#     assign_public_ip = false
+#   }
+# }

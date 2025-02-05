@@ -9,6 +9,8 @@ module "s3" {
   raw_bucket_name     = "raw-prd-5201201"
   scripts_bucket_name = "scripts-5201201"
   oper_bucket_name    = "oper-5201201"
+  audit_bucket_name   = "audit-5201201"
+  output_bucket_name  = "output-5201201"
 
   tags = {
     "Project"     = "SDTM-52012-01"
@@ -56,9 +58,11 @@ module "vpc" {
 
 # ECS Module: Orchestrates containers for main data processing
 module "ecs" {
-  source          = "./ecs"
-  vpc_id          = module.vpc.vpc_id # Pass the VPC ID here
-  private_subnets = module.vpc.private_subnets
-  oper_bucket_arn = module.s3.oper_bucket_arn
+  source            = "./ecs"
+  vpc_id            = module.vpc.vpc_id
+  private_subnets   = module.vpc.private_subnets
+  oper_bucket_arn   = module.s3.oper_bucket_arn
+  audit_bucket_arn  = module.s3.audit_bucket_arn
+  output_bucket_arn = module.s3.output_bucket_arn
 }
 

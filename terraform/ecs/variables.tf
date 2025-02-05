@@ -12,3 +12,14 @@ variable "oper_bucket_arn" {
   type        = string
 }
 
+variable "audit_bucket_arn" {
+  description = "The ARN of the audit S3 bucket"
+  type        = string
+}
+
+variable "output_bucket_arn" {
+  description = "The ARN of the output S3 bucket"
+  type        = string
+}
+
+

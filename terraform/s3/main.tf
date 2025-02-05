@@ -125,5 +125,75 @@ resource "aws_s3_bucket_policy" "oper-bucket-policy" {
 }
 
 # ----------------------------------------
+# Audit Bucket
+# ----------------------------------------
+resource "aws_s3_bucket" "audit-bucket" {
+  bucket = var.audit_bucket_name
+
+  tags = var.tags
+}
+
+# Audit Bucket policy
+resource "aws_s3_bucket_policy" "audit-bucket-policy" {
+  bucket = aws_s3_bucket.audit-bucket.id
+
+  policy = jsonencode({
+    "Version" = "2012-10-17"
+    "Statement" = [
+      {
+        "Effect"    = "Allow"
+        "Action"    = "s3:PutObject"
+        "Resource"  = "${aws_s3_bucket.audit-bucket.arn}/*"
+        "Principal" = {
+          "Service" = "ecs-tasks.amazonaws.com"
+        }
+        "Condition" = {
+          "StringEquals" = {
+            "aws:RequestedRegion" = "us-west-1"
+          }
+        }
+      }
+    ]
+  })
+}
+
+# ----------------------------------------
 # Output Bucket
 # ----------------------------------------
+resource "aws_s3_bucket" "output-bucket" {
+  bucket = var.output_bucket_name
+
+  tags = var.tags
+}
+
+# Oper Bucket policy
+resource "aws_s3_bucket_policy" "output-bucket-policy" {
+  bucket = aws_s3_bucket.output-bucket.id
+
+  policy = jsonencode({
+    "Version" = "2012-10-17"
+    "Statement" = [
+      {
+        "Effect"    = "Allow"
+        "Action"    = "s3:PutObject"
+        "Resource"  = "${aws_s3_bucket.output-bucket.arn}/*" # Allow write to output s3
+        "Principal" = {
+          "Service" = "ecs-tasks.amazonaws.com"
+        }
+        "Condition" = {
+          "StringEquals" = {
+            "aws:RequestedRegion" = "us-west-1" 
+          }
+        }
+      },
+      {
+        "Effect" : "Allow",
+        "Principal" : {
+          "Service" : "glue.amazonaws.com"
+        },
+        "Action" : "s3:GetObject",
+        "Resource" : "${aws_s3_bucket.output-bucket.arn}/*" # Allow Glue to read
+      }
+    ]
+  })
+}

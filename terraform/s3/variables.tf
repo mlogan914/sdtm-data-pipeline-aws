@@ -13,10 +13,15 @@ variable "oper_bucket_name" {
   description = "The name of the S3 bucket for operational files"
 }
 
-#  variable "output_bucket_name" {
-#    type        = string
-#    description = "The name of the S3 bucket for output"
-#  }
+variable "audit_bucket_name" {
+  type        = string
+  description = "The name of the S3 bucket for audit files"
+}
+
+ variable "output_bucket_name" {
+   type        = string
+   description = "The name of the S3 bucket for output"
+ }
 
 variable "tags" {
   type        = map(string)
