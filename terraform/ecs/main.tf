@@ -25,20 +25,41 @@ resource "aws_ecs_cluster" "ecs_cluster" {
 # ECS Task Definition(s)
 # This defines the transform and validation containers.
 # ---------------------------------------
-resource "aws_ecs_task_definition" "ecs_task" {
+
+resource "aws_ecs_task_definition" "ecs_task_transform" {
   family                   = "sdtm-task-5201201"
   container_definitions    = jsonencode([
     {
       name      = "sdtm-container-5201201-transform",
-      image     = "${aws_ecr_repository.ecr_repo_transform.repository_url}:latest",  # Update to different images if necessary
+      image     = "${aws_ecr_repository.ecr_repo_transform.repository_url}:latest",
       memory    = 512,
       cpu       = 256,
       essential = true,
       portMappings = [{
         containerPort = 80
         hostPort      = 80
-      }]
-    },
+      }],
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          awslogs-group         = "/ecs/sdtm-task-5201201"
+          awslogs-region        = "us-west-1" # Change to your region
+          awslogs-stream-prefix = "ecs"
+        }
+      }
+    }
+  ])
+  requires_compatibilities = ["FARGATE"]
+  network_mode             = "awsvpc"
+  execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
+  task_role_arn            = aws_iam_role.ecs_task_execution_role.arn
+  memory                   = "1024"
+  cpu                      = "512"
+}
+
+resource "aws_ecs_task_definition" "ecs_task_validate" {
+  family                   = "sdtm-task-5201201"
+  container_definitions    = jsonencode([
     {
       name      = "sdtm-container-5201201-validate",
       image     = "${aws_ecr_repository.ecr_repo_validate.repository_url}:latest",  # If different images, specify here
@@ -56,14 +77,13 @@ resource "aws_ecs_task_definition" "ecs_task" {
   network_mode             = "awsvpc"
   execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
   task_role_arn            = aws_iam_role.ecs_task_execution_role.arn
-  memory                   = "1024"  # Total memory for both containers
-  cpu                      = "512"   # Total CPU for both containers
+  memory                   = "1024"  
+  cpu                      = "512" 
 }
 
 # ---------------------------------------
 # Create a Security Group
 # ---------------------------------------
-
 # Adjust if needed
 resource "aws_security_group" "ecs_sg" {
   name        = "ecs-sg-5201201"
@@ -88,10 +108,10 @@ resource "aws_security_group" "ecs_sg" {
 # ---------------------------------------
 # Create and ECS Service
 # ---------------------------------------
-resource "aws_ecs_service" "ecs_service" {
-  name            = "ecs-service-5201201"
+resource "aws_ecs_service" "ecs_service_transform" {
+  name            = "ecs-service-5201201-transform"
   cluster         = aws_ecs_cluster.ecs_cluster.id
-  task_definition = aws_ecs_task_definition.ecs_task.arn
+  task_definition = aws_ecs_task_definition.ecs_task_transform.arn
   desired_count   = 1
   launch_type     = "FARGATE"
 
@@ -102,4 +122,16 @@ resource "aws_ecs_service" "ecs_service" {
   }
 }
 
+resource "aws_ecs_service" "ecs_service_validate" {
+  name            = "ecs-service-5201201-validate"
+  cluster         = aws_ecs_cluster.ecs_cluster.id
+  task_definition = aws_ecs_task_definition.ecs_task_validate.arn
+  desired_count   = 1
+  launch_type     = "FARGATE"
 
+  network_configuration {
+    subnets         = var.private_subnets
+    security_groups = [aws_security_group.ecs_sg.id]
+    assign_public_ip = false
+  }
+}
