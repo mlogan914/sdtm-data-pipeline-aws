@@ -5,10 +5,17 @@ import pyarrow.parquet as pq
 import pyreadstat
 import boto3
 from datetime import datetime
-#import os
 
-# Set the working directory to a desired path
-#os.chdir('/home/mlogan/projects/cdisc')
+# Test write permissions to /tmp
+try:
+    test_file = '/tmp/test.txt'
+    with open(test_file, 'w') as f:
+        f.write('This is a test file.')
+
+    print(f"Test file successfully written to {test_file}")
+except Exception as e:
+    print(f"Failed to write to /tmp: {e}")
+
 
 # Initialize S3 client
 s3 = boto3.client('s3')
@@ -112,14 +119,3 @@ s3.upload_file('/tmp/dm.parquet', bucket_name, 'dm.parquet')
 s3.upload_file('/tmp/dm.xpt', bucket_name, 'dm.xpt')
 
 print("Data transformation complete and saved in CSV, Parquet, and XPT formats.")
-
-
-try:
-    # Test writing to /tmp
-    test_file = '/tmp/test.txt'
-    with open(test_file, 'w') as f:
-        f.write('This is a test file.')
-
-    print(f"Test file successfully written to {test_file}")
-except Exception as e:
-    print(f"Failed to write to /tmp: {e}")

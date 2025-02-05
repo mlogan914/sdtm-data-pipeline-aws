@@ -44,5 +44,3 @@ resource "aws_iam_policy_attachment" "ecs_s3_write_attachment" {
   roles      = [aws_iam_role.ecs_task_execution_role.name]
   policy_arn = aws_iam_policy.ecs_s3_write_policy.arn
 }
-
-
