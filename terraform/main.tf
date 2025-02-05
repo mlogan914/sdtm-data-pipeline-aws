@@ -59,5 +59,6 @@ module "ecs" {
   source          = "./ecs"
   vpc_id          = module.vpc.vpc_id # Pass the VPC ID here
   private_subnets = module.vpc.private_subnets
+  oper_bucket_arn = module.s3.oper_bucket_arn
 }
 

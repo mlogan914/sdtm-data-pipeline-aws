@@ -1,17 +1,4 @@
 boto3==1.24.23
-botocore==1.27.96
-click==8.1.8
-jmespath==1.0.1
-numpy==2.2.2
 pandas==2.2.3
 pyarrow==19.0.0
 pyreadstat==1.2.8
-python-dateutil==2.9.0.post0
-pytz==2024.2
-PyYAML==6.0.2
-s3transfer==0.6.2
-sas7bdat==2.2.3
-six==1.17.0
-tzdata==2024.2
-urllib3==1.26.20
-xport==3.6.1

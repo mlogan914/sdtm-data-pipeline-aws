@@ -5,10 +5,10 @@ import pyarrow.parquet as pq
 import pyreadstat
 import boto3
 from datetime import datetime
-import os
+#import os
 
 # Set the working directory to a desired path
-os.chdir('/home/mlogan/projects/cdisc')
+#os.chdir('/home/mlogan/projects/cdisc')
 
 # Initialize S3 client
 s3 = boto3.client('s3')
@@ -97,18 +97,29 @@ def transform_data(df):
 transformed_df = transform_data(df)
 
 # Output the transformed data to CSV
-transformed_df.to_csv('dm.csv', index=False)
+transformed_df.to_csv('/tmp/dm.csv', index=False)
 
 # Output the transformed data to Parquet
 table = pa.Table.from_pandas(transformed_df)
-pq.write_table(table, 'dm.parquet')
+pq.write_table(table, '/tmp/dm.parquet')
 
 # Output the transformed data to XPT format (using pyreadstat)
-pyreadstat.write_xport(transformed_df, 'dm.xpt')
+pyreadstat.write_xport(transformed_df, '/tmp/dm.xpt')
 
 # Upload files to S3
-s3.upload_file('dm.csv', bucket_name, 'dm.csv')
-s3.upload_file('dm.parquet', bucket_name, 'dm.parquet')
-s3.upload_file('dm.xpt', bucket_name, 'dm.xpt')
+s3.upload_file('/tmp/dm.csv', bucket_name, 'dm.csv')
+s3.upload_file('/tmp/dm.parquet', bucket_name, 'dm.parquet')
+s3.upload_file('/tmp/dm.xpt', bucket_name, 'dm.xpt')
 
 print("Data transformation complete and saved in CSV, Parquet, and XPT formats.")
+
+
+try:
+    # Test writing to /tmp
+    test_file = '/tmp/test.txt'
+    with open(test_file, 'w') as f:
+        f.write('This is a test file.')
+
+    print(f"Test file successfully written to {test_file}")
+except Exception as e:
+    print(f"Failed to write to /tmp: {e}")
