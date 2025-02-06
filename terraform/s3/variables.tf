@@ -38,3 +38,7 @@ variable "lambda_function_arn" {
   description = "ARN of the Lambda function to be triggered by S3 events"
 }
 
+variable "ecs_task_execution_role_arn" {
+  type        = string
+  description = "ARN of the ecs task execution role"
+}
