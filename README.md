@@ -1,4 +1,4 @@
-# Automated SDTM Data Pipeline
+# Design Concept for Automated SDTM Data Pipeline in Pharma & Medical Device Industries
 
 ## Overview
 
@@ -26,46 +26,51 @@ The pipeline is built using AWS services to orchestrate data transformation, int
 
 #### Directory Structure
 ```
-├── dm.py                         # Data transformation script
-├── dockerfile                    # Docker configuration for the image
-├── raw_dm.csv                    # Example raw data file
-├── requirements.txt              # Python dependencies for local environment
-└── terraform                     # Terraform infrastructure configuration
-    ├── ecs                       # ECS-related infrastructure
-    │   ├── main.tf               # ECS configuration
-    │   ├── roles.tf              # IAM roles for ECS
-    │   └── variables.tf          # ECS variables
-    ├── glue                      # Glue-related infrastructure and scripts
-    │   ├── glue_data_quality.py  # Data quality check script for AWS Glue
-    │   ├── main.tf               # Glue configuration
-    │   ├── outputs.tf            # Glue output configuration
-    │   ├── roles.tf              # IAM roles for Glue
-    │   └── variables.tf          # Glue variables
-    ├── lambda                    # Lambda functions and configuration
-    │   ├── lambda_function.py    # Lambda function code
-    │   ├── lambda_function.zip   # Zipped Lambda function for deployment
-    │   ├── main.tf               # Lambda infrastructure configuration
-    │   └── roles.tf              # IAM roles for Lambda
-    ├── main.tf                   # Main Terraform configuration
-    ├── providers.tf              # Provider configurations (AWS)
-    ├── s3                        # S3-related configuration
-    │   ├── main.tf               # S3 infrastructure configuration
-    │   ├── outputs.tf            # S3 outputs
-    │   └── variables.tf          # S3 variables
-    ├── sns                       # SNS configuration
-    │   └── main.tf               # SNS infrastructure configuration
-    ├── step_functions            # Step Functions configuration
-    │   ├── main.tf               # Step Functions definition
-    │   ├── roles.tf              # IAM roles for Step Functions
-    │   └── variables.tf          # Step Functions variables
-    └── vpc                       # VPC infrastructure
-        ├── main.tf               # VPC configuration
-        └── outputs.tf            # VPC output configuration
+├── docker                          # Contains Docker configurations and scripts for data transformation and validation
+│   ├── transform                   # Transformation scripts and Docker configurations
+│   │   ├── dm.py                   # Data transformation script
+│   │   ├── dockerfile              # Dockerfile for building the transformation container
+│   │   └── requirements.txt        # Python dependencies for transformation process
+│   └── validate                    # Validation scripts and Docker configuration
+│       ├── dockerfile              # Dockerfile for the validation container
+│       └── run_p21.py              # Script to run data validation
+├── raw_dm.csv                      # Raw data file for testing and validation
+└── terraform                       # Terraform configurations for provisioning AWS resources
+    ├── ecs                         # ECS-related infrastructure configuration
+    │   ├── main.tf                 # ECS configuration
+    │   ├── roles.tf                # IAM roles for ECS
+    │   └── variables.tf            # ECS-related variables
+    ├── glue                        # AWS Glue infrastructure and data quality scripts
+    │   ├── glue_data_quality.py    # Data quality check script for Glue
+    │   ├── main.tf                 # Glue configuration
+    │   ├── outputs.tf              # Glue output configuration
+    │   ├── roles.tf                # IAM roles for Glue
+    │   └── variables.tf            # Glue-related variables
+    ├── lambda                      # Lambda functions and configuration
+    │   ├── lambda_function.py      # Lambda function code
+    │   ├── lambda_function.zip     # Zipped Lambda function for deployment
+    │   ├── main.tf                 # Lambda infrastructure configuration
+    │   └── roles.tf                # IAM roles for Lambda
+    ├── main.tf                     # Main Terraform configuration
+    ├── providers.tf                # AWS provider configurations for Terraform
+    ├── s3                          # S3-related infrastructure configuration
+    │   ├── main.tf                 # S3 infrastructure configuration
+    │   ├── outputs.tf              # S3 outputs
+    │   └── variables.tf            # S3-related variables
+    ├── sns                         # SNS infrastructure configuration
+    │   └── main.tf                 # SNS configuration
+    ├── step_functions              # AWS Step Functions infrastructure configuration
+    │   ├── main.tf                 # Step Functions configuration
+    │   ├── roles.tf                # IAM roles for Step Functions
+    │   └── variables.tf            # Step Functions-related variables
+    └── vpc                         # VPC-related infrastructure configuration
+        ├── main.tf                 # VPC configuration
+        └── outputs.tf              # VPC output configuration
 ```
 ### Compliance Validation
 - **Pinnacle21 CLI**: Integrated for CDISC compliance checks, ensuring adherence to regulatory standards. Future iterations will address broader regulatory compliance and full domain coverage.
 
-NOTE: The original plan was to include this validation step within the pipeline before delivery. However, due to the OS limitation, this was not feasible. An alternative would be to spin up a VM to run the validation on Windows, but this could introduce unnecessary overhead. Running the tool externally to the pipeline is considered a more efficient approach for now.
+- NOTE: The original plan was to include this validation step within the pipeline before delivery. However, due to the OS limitation, this was not feasible. An alternative would be to spin up a VM to run the validation on Windows, but this could introduce unnecessary overhead. Running the tool externally to the pipeline is considered a more efficient approach for now.
 
 ### Metadata Management
 - **AWS Glue**: Centralized metadata repository to ensure consistent data lineage and visibility across pipeline stages.
