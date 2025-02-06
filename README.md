@@ -7,7 +7,7 @@ This project presents a design concept for an automated data pipeline tailored f
 ---
 
 ## Architecture Diagram
-![diagram](cdisc_pipeline_step_functions_v6.drawio.png)
+![diagram](cdisc_pipeline_architechture.png)
 
 ---
 
@@ -64,6 +64,8 @@ The pipeline is built using AWS services to orchestrate data transformation, int
 ```
 ### Compliance Validation
 - **Pinnacle21 CLI**: Integrated for CDISC compliance checks, ensuring adherence to regulatory standards. Future iterations will address broader regulatory compliance and full domain coverage.
+
+NOTE: The original plan was to include this validation step within the pipeline before delivery. However, due to the OS limitation, this was not feasible. An alternative would be to spin up a VM to run the validation on Windows, but this could introduce unnecessary overhead. Running the tool externally to the pipeline is considered a more efficient approach for now.
 
 ### Metadata Management
 - **AWS Glue**: Centralized metadata repository to ensure consistent data lineage and visibility across pipeline stages.
