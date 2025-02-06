@@ -100,24 +100,30 @@ resource "aws_s3_bucket" "oper-bucket" {
   tags = var.tags
 }
 
-# Oper Bucket policy
+# Operational Bucket policy (Grant ECS Task Role access)
 resource "aws_s3_bucket_policy" "oper-bucket-policy" {
   bucket = aws_s3_bucket.oper-bucket.id
 
   policy = jsonencode({
-    "Version" = "2012-10-17"
-    "Statement" = [
+    Version = "2012-10-17",
+    Statement = [
       {
-        "Effect"    = "Allow"
-        "Action"    = "s3:PutObject"
-        "Resource"  = "${aws_s3_bucket.oper-bucket.arn}/*"
-        "Principal" = {
-          "Service" = "ecs-tasks.amazonaws.com"
+        Effect = "Allow"
+        Action = [
+          "s3:PutObject",
+          "s3:GetObject"
+        ]
+        Resource = "${aws_s3_bucket.oper-bucket.arn}/*"
+        Principal = {
+          "AWS" = "${var.ecs_task_execution_role_arn}"
         }
-        "Condition" = {
-          "StringEquals" = {
-            "aws:RequestedRegion" = "us-west-1" # Restricting to the region where ECS is running
-          }
+      },
+      {
+        Effect = "Allow"
+        Action = "s3:ListBucket"
+        Resource = "${aws_s3_bucket.oper-bucket.arn}"
+        Principal = {
+          "AWS" = "${var.ecs_task_execution_role_arn}"
         }
       }
     ]
@@ -166,33 +172,33 @@ resource "aws_s3_bucket" "output-bucket" {
   tags = var.tags
 }
 
-# Oper Bucket policy
+# Output Bucket policy
 resource "aws_s3_bucket_policy" "output-bucket-policy" {
   bucket = aws_s3_bucket.output-bucket.id
 
   policy = jsonencode({
-    "Version" = "2012-10-17"
-    "Statement" = [
+    "Version": "2012-10-17",
+    "Statement": [
       {
-        "Effect"    = "Allow"
-        "Action"    = "s3:PutObject"
-        "Resource"  = "${aws_s3_bucket.output-bucket.arn}/*" # Allow write to output s3
-        "Principal" = {
-          "Service" = "ecs-tasks.amazonaws.com"
-        }
-        "Condition" = {
-          "StringEquals" = {
-            "aws:RequestedRegion" = "us-west-1" 
+        "Effect": "Allow",
+        "Action": "s3:PutObject",
+        "Resource": "${aws_s3_bucket.output-bucket.arn}/*", # Allow write to output s3
+        "Principal": {
+          "AWS": "${var.ecs_task_execution_role_arn}"  
+        },
+        "Condition": {
+          "StringEquals": {
+            "aws:RequestedRegion": "us-west-1" 
           }
         }
       },
       {
-        "Effect" : "Allow",
-        "Principal" : {
-          "Service" : "glue.amazonaws.com"
+        "Effect": "Allow",
+        "Principal": {
+          "Service": "glue.amazonaws.com"
         },
-        "Action" : "s3:GetObject",
-        "Resource" : "${aws_s3_bucket.output-bucket.arn}/*" # Allow Glue to read
+        "Action": "s3:GetObject",
+        "Resource": "${aws_s3_bucket.output-bucket.arn}/*" # Allow Glue to read
       }
     ]
   })

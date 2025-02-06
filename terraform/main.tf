@@ -20,6 +20,9 @@ module "s3" {
   # Inputs from Lambda Module
   lambda_function_name = module.lambda.process_raw_data_function_name
   lambda_function_arn  = module.lambda.process_raw_data_arn
+
+  # Inputs from ECS Module
+  ecs_task_execution_role_arn = module.ecs.ecs_task_execution_role_arn
 }
 
 # Lambda Module: Handles the Lambda functions for processing raw data
@@ -64,5 +67,6 @@ module "ecs" {
   oper_bucket_arn   = module.s3.oper_bucket_arn
   audit_bucket_arn  = module.s3.audit_bucket_arn
   output_bucket_arn = module.s3.output_bucket_arn
+
 }
 
