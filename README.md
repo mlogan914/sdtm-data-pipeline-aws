@@ -1,32 +1,36 @@
-# Design Concept for Automated SDTM Data Pipeline in Pharma & Medical Device Industries
+# Automated SDTM Data Pipeline
 
 ## Overview
 
-This project presents a design concept for an automated data pipeline tailored for the pharmaceutical and medical device industries. The pipeline transforms raw clinical data from diverse sources—including EDC, EHR, laboratory systems, wearables, manual uploads (e.g., CSVs), and APIs—into CDISC SDTM-compliant datasets. By automating data processing, compliance validation, and output generation, this pipeline streamlines workflows and ensures high-quality, compliant datasets for clinical trials.
+This project presents a design concept for an automated data pipeline tailored to the pharmaceutical and medical device industries. The pipeline transforms raw clinical data from diverse sources—including EDC, EHR, laboratory systems, wearables, manual uploads (e.g., CSVs), and APIs—into CDISC SDTM-compliant datasets. By automating data processing, compliance validation, and output generation, the pipeline streamlines workflows and ensures high-quality, regulatory-compliant datasets for clinical trials.
+
+SDTM (Study Data Tabulation Model) is a standardized format developed by CDISC (Clinical Data Interchange Standards Consortium) for organizing and submitting clinical trial data to regulatory agencies such as the FDA and PMDA. It enhances consistency, traceability, and interoperability across studies.
 
 ---
 
 ## Architecture Diagram
-![diagram](cdisc_pipeline_architechture.png)
+This pipeline is a fully serverless data processing framework built using AWS services to automate data transformation, integration, and validation for clinical trials, eliminating infrastructure management while optimizing performance.
+![diagram](architechture.png)
 
 ---
 
 ## Key Features
 
-### AWS Services
-The pipeline is built using AWS services to orchestrate data transformation, integration, and processing:
+### Serverless AWS-Based Architecture
 - **S3**: For raw data storage, staging, and final outputs.
 - **Step Functions**: To manage and orchestrate the pipeline stages.
 - **Glue**: For metadata management, data quality checks, and centralized metadata repository updates.
-- **ECS**: To execute transformation and validation scripts.
+- **ECS (Fargate)**: To execute transformation and validation scripts.
 - **Lambda**: For event-driven workflows and metadata updates.
+- **Athena**: Enables serverless SQL-based querying for analysis and validation of processed datasets.
+= **CloudWatch**: Provides monitoring, logging, and alerts to ensure the pipeline runs smoothly and identifies issues in real-time.
 
 ### Infrastructure as Code
 - **Terraform**: Used for provisioning scalable, reusable, and automated infrastructure.
 
 #### Directory Structure
 ```
-├── docker                          # Contains Docker configurations and scripts for data transformation and validation
+├── docker                          # Docker configurations for transform and validate
 │   ├── transform                   # Transformation scripts and Docker configurations
 │   │   ├── dm.py                   # Data transformation script
 │   │   ├── dockerfile              # Dockerfile for building the transformation container
@@ -43,7 +47,7 @@ The pipeline is built using AWS services to orchestrate data transformation, int
     ├── glue                        # AWS Glue infrastructure and data quality scripts
     │   ├── glue_data_quality.py    # Data quality check script for Glue
     │   ├── main.tf                 # Glue configuration
-    │   ├── outputs.tf              # Glue output configuration
+    │   ├── outputs.tf              # Glue outputs
     │   ├── roles.tf                # IAM roles for Glue
     │   └── variables.tf            # Glue-related variables
     ├── lambda                      # Lambda functions and configuration
@@ -65,12 +69,13 @@ The pipeline is built using AWS services to orchestrate data transformation, int
     │   └── variables.tf            # Step Functions-related variables
     └── vpc                         # VPC-related infrastructure configuration
         ├── main.tf                 # VPC configuration
-        └── outputs.tf              # VPC output configuration
+        └── outputs.tf              # VPC outputs
 ```
 ### Compliance Validation
 - **Pinnacle21 CLI**: Integrated for CDISC compliance checks, ensuring adherence to regulatory standards. Future iterations will address broader regulatory compliance and full domain coverage.
-
-- NOTE: The original plan was to include this validation step within the pipeline before delivery. However, due to the OS limitation, this was not feasible. An alternative would be to spin up a VM to run the validation on Windows, but this could introduce unnecessary overhead. Running the tool externally to the pipeline is considered a more efficient approach for now.
+- Note: Pinnacle21 Community and its CLI are only supported on Windows and macOS, making Linux OS incompatible.
+- To work around this, a placeholder script has been added to simulate a P21 validation run. This can later be replaced with custom scripts if needed.
+Initially, the P21 validation step was planned as part of the pipeline, but due to this limitation, it is not feasible. An alternative would be to provision a Windows VM for validation, but this may introduce unnecessary overhead. A more efficient approach could be to run the tool externally from the pipeline.
 
 ### Metadata Management
 - **AWS Glue**: Centralized metadata repository to ensure consistent data lineage and visibility across pipeline stages.
