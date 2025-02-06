@@ -45,9 +45,15 @@ module "glue" {
 module "step_functions" {
   source = "./step_functions"
 
+  # Inputs from Lambda Module
+  lambda_function_arn = module.lambda.process_raw_data_arn
+
   # Inputs from the Glue module
   glue_crawler_arn = module.glue.glue_crawler_arn
   glue_job_arn     = module.glue.glue_job_arn
+
+  # Inputs from SNS
+  sns_topic_glue_arn = module.sns.sns_topic_glue_arn
 }
 
 # SNS Module: Manages SNS for notifications

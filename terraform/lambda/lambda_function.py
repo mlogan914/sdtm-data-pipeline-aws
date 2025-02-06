@@ -7,7 +7,7 @@ def lambda_handler(event, context):
     stepfunctions = boto3.client('stepfunctions')
 
     # Define the ARN of your state machine (replace with your ARN)
-    state_machine_arn = 'arn:aws:states:us-west-1:525425830681:stateMachine:MyStateMachine-x5hxngr0b'
+    state_machine_arn = 'arn:aws:states:us-west-1:525425830681:stateMachine:state-machine-5201201'
 
     # Extract relevant S3 event details
     try:
