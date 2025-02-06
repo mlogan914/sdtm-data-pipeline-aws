@@ -20,7 +20,7 @@ JSON
 
 resource "aws_iam_policy" "step_function_policy" {
   name        = "step-function-policy"
-  description = "Policy for Step Functions to interact with Lambda, Glue, and X-Ray"
+  description = "Policy for Step Functions to interact with Lambda, Glue, X-Ray, and SNS"
 
   policy = <<JSON
 {
@@ -36,7 +36,7 @@ resource "aws_iam_policy" "step_function_policy" {
       "Action": [
         "glue:StartJobRun",
         "glue:GetJobRun"
-    ],
+      ],
       "Resource": "${var.glue_job_arn}"
     },
     {
@@ -53,14 +53,19 @@ resource "aws_iam_policy" "step_function_policy" {
       "Effect": "Allow",
       "Action": "lambda:InvokeFunction",
       "Resource": [
-        "arn:aws:lambda:us-west-1:525425830681:function:process_raw_data:*",
-        "arn:aws:lambda:us-west-1:525425830681:function:process_raw_data"
+        "${var.lambda_function_arn}:$LATEST"
       ]
+    },
+    {
+      "Effect": "Allow",
+      "Action": "SNS:Publish",
+      "Resource": "${var.sns_topic_glue_arn}"
     }
   ]
 }
 JSON
 }
+
 
 resource "aws_iam_role_policy_attachment" "step_function_policy_attachment" {
   policy_arn = aws_iam_policy.step_function_policy.arn

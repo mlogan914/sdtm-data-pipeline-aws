@@ -23,7 +23,7 @@ This pipeline is a fully serverless data processing framework built using AWS se
 - **ECS (Fargate)**: To execute transformation and validation scripts.
 - **Lambda**: For event-driven workflows and metadata updates.
 - **Athena**: Enables serverless SQL-based querying for analysis and validation of processed datasets.
-= **CloudWatch**: Provides monitoring, logging, and alerts to ensure the pipeline runs smoothly and identifies issues in real-time.
+- **CloudWatch**: Provides monitoring, logging, and alerts to ensure the pipeline runs smoothly and identifies issues in real-time.
 
 ### Infrastructure as Code
 - **Terraform**: Used for provisioning scalable, reusable, and automated infrastructure.
