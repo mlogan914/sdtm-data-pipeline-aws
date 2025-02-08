@@ -40,7 +40,6 @@ resource "aws_cloudwatch_log_group" "ecs_log_group_validate" {
 # ECS Task Definition(s)
 # This defines the transform and validation containers.
 # ---------------------------------------
-
 resource "aws_ecs_task_definition" "ecs_task_transform" {
   family                   = "sdtm-task-transform"
   container_definitions    = jsonencode([
@@ -107,7 +106,6 @@ resource "aws_ecs_task_definition" "ecs_task_validate" {
 # ---------------------------------------
 # Create a Security Group
 # ---------------------------------------
-# Adjust if needed
 resource "aws_security_group" "ecs_sg" {
   name        = "ecs-sg-5201201"
   description = "Allow inbound traffic to ECS containers"
