@@ -16,3 +16,18 @@ variable sns_topic_glue_arn {
   type        = string
   description = "ARN of the Glue Topic"
 }
+
+variable ecs_task_transform_arn {
+  type        = string
+  description = "ARN of the ECS transform task"
+}
+
+variable ecs_task_execution_role_arn {
+  type        = string
+  description = "ARN of the ECS task execution role"
+}
+
+variable ecs_cluster_arn {
+  type        = string
+  description = "ARN of the ECS cluster"
+}

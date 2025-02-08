@@ -54,6 +54,11 @@ module "step_functions" {
 
   # Inputs from SNS
   sns_topic_glue_arn = module.sns.sns_topic_glue_arn
+
+  #Inputs form ECS
+  ecs_task_transform_arn      = module.ecs.ecs_task_transform_arn
+  ecs_task_execution_role_arn = module.ecs.ecs_task_execution_role_arn
+  ecs_cluster_arn             = module.ecs.ecs_cluster_arn
 }
 
 # SNS Module: Manages SNS for notifications
@@ -73,6 +78,5 @@ module "ecs" {
   oper_bucket_arn   = module.s3.oper_bucket_arn
   audit_bucket_arn  = module.s3.audit_bucket_arn
   output_bucket_arn = module.s3.output_bucket_arn
-
 }
 

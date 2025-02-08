@@ -12,17 +12,15 @@ resource "aws_sfn_state_machine" "my_state_machine" {
 
   definition = <<ASL
 {
-  "Comment": "A description of my state machine",
+  "Comment": "Step Functions workflow for Lambda, Glue Crawler, Data Quality Checks, and ECS Task",
   "StartAt": "Lambda Invoke",
   "States": {
     "Lambda Invoke": {
       "Type": "Task",
       "Resource": "arn:aws:states:::lambda:invoke",
-      "QueryLanguage": "JSONata",
-      "Output": "{% $states.result.Payload %}",
-      "Arguments": {
+      "Parameters": {
         "FunctionName": "arn:aws:lambda:us-west-1:525425830681:function:process_raw_data:$LATEST",
-        "Payload": "{% $states.input %}"
+        "Payload.$": "$"
       },
       "Retry": [
         {
@@ -34,8 +32,7 @@ resource "aws_sfn_state_machine" "my_state_machine" {
           ],
           "IntervalSeconds": 1,
           "MaxAttempts": 3,
-          "BackoffRate": 2,
-          "JitterStrategy": "FULL"
+          "BackoffRate": 2
         }
       ],
       "Next": "StartCrawler"
@@ -43,76 +40,110 @@ resource "aws_sfn_state_machine" "my_state_machine" {
     "StartCrawler": {
       "Type": "Task",
       "Resource": "arn:aws:states:::aws-sdk:glue:startCrawler",
-      "QueryLanguage": "JSONata",
-      "Arguments": {
+      "Parameters": {
         "Name": "crawler-5201201"
       },
-      "Next": "Glue StartJobRun"
+      "Next": "WaitForCrawler"
     },
-    "Glue StartJobRun": {
+    "WaitForCrawler": {
+      "Type": "Wait",
+      "Seconds": 5,
+      "Next": "CheckCrawlerStatus"
+    },
+    "CheckCrawlerStatus": {
       "Type": "Task",
-      "Resource": "arn:aws:states:::glue:startJobRun",
-      "QueryLanguage": "JSONata",
-      "Arguments": {
-        "JobName": "data-quality-job-5201201"
+      "Resource": "arn:aws:states:::aws-sdk:glue:getCrawler",
+      "Parameters": {
+        "Name": "crawler-5201201"
       },
-      "Next": "Choice"
+      "Next": "EvaluateCrawlerStatus"
     },
-    "Choice": {
+    "EvaluateCrawlerStatus": {
       "Type": "Choice",
       "Choices": [
         {
-          "Variable": "$.SdkHttpMetadata.HttpStatusCode",
-          "NumericEquals": 200,
-          "Next": "CheckGlueJobStatus"
+          "Variable": "$.Crawler.State",
+          "StringEquals": "READY",
+          "Next": "Glue StartJobRun"
         }
       ],
-      "Default": "SNS Publish"
+      "Default": "WaitForCrawler"
     },
-    "CheckGlueJobStatus": {
+    "Glue StartJobRun": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::aws-sdk:glue:startJobRun",
+      "Parameters": {
+        "JobName": "data-quality-job-5201201"
+      },
+      "ResultPath": "$.JobRunResult",
+      "Next": "GetJobRunStatus"
+    },
+    "GetJobRunStatus": {
       "Type": "Task",
       "Resource": "arn:aws:states:::aws-sdk:glue:getJobRun",
       "Parameters": {
-        "JobName.$": "$.JobName",
-        "RunId.$": "$.JobRunId"
+        "JobName": "data-quality-job-5201201",
+        "RunId.$": "$.JobRunResult.JobRunId"
       },
+      "ResultPath": "$.GetJobRunResponse",
       "Next": "EvaluateJobStatus"
     },
     "EvaluateJobStatus": {
       "Type": "Choice",
       "Choices": [
         {
-          "Variable": "$.JobRun.JobRunState",
+          "Variable": "$.GetJobRunResponse.JobRun.JobRunState",
           "StringEquals": "SUCCEEDED",
           "Next": "ECS RunTask"
         },
         {
-          "Variable": "$.JobRun.JobRunState",
+          "Variable": "$.GetJobRunResponse.JobRun.JobRunState",
           "StringEquals": "FAILED",
           "Next": "SNS Publish"
+        },
+        {
+          "Variable": "$.GetJobRunResponse.JobRun.JobRunState",
+          "StringEquals": "RUNNING",
+          "Next": "WaitBeforeRecheckingJobStatus"
         }
       ],
       "Default": "SNS Publish"
     },
+    "WaitBeforeRecheckingJobStatus": {
+      "Type": "Wait",
+      "Seconds": 5,
+      "Next": "GetJobRunStatus"
+    },
     "ECS RunTask": {
       "Type": "Task",
       "Resource": "arn:aws:states:::ecs:runTask",
-      "QueryLanguage": "JSONata",
-      "Arguments": {
+      "Parameters": {
         "LaunchType": "FARGATE",
-        "Cluster": "arn:aws:ecs:REGION:ACCOUNT_ID:cluster/MyECSCluster",
-        "TaskDefinition": "arn:aws:ecs:REGION:ACCOUNT_ID:task-definition/MyTaskDefinition:1"
+        "Cluster": "arn:aws:ecs:us-west-1:525425830681:cluster/ecs-cluster-5201201",
+        "TaskDefinition": "arn:aws:ecs:us-west-1:525425830681:task-definition/sdtm-task-transform:2",
+        "NetworkConfiguration": {
+          "AwsvpcConfiguration": {
+            "Subnets": [
+              "subnet-034df93d3de3e4879",
+              "subnet-00d4b486d17db7b20",
+              "subnet-0e35bf95056fc68c0"
+            ],
+            "SecurityGroups": [
+              "sg-02071dac5218410e0"
+            ],
+            "AssignPublicIp": "ENABLED"
+          }
+        }
       },
       "End": true
     },
     "SNS Publish": {
       "Type": "Task",
       "Resource": "arn:aws:states:::sns:publish",
-      "QueryLanguage": "JSONata",
-      "Arguments": {
+      "Parameters": {
         "TopicArn": "arn:aws:sns:us-west-1:525425830681:sns-glue-5201201",
         "Subject": "Glue Job Failure Notification",
-        "Message": "{% $states.input %}"
+        "Message.$": "$"
       },
       "End": true
     }
