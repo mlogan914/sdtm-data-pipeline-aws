@@ -1,3 +1,9 @@
+# ================================================================
+# Glue Module - IAM Roles and Policies
+# 
+# This file defines roles and policies for the Glue module.
+# ===============================================================
+
 # Glue Service Role
 resource "aws_iam_role" "glue_service_role" {
   name = "glue_service_role"

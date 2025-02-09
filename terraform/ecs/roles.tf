@@ -1,6 +1,14 @@
-# ----------------------------------------
+# ================================================================
+# ECS Module - IAM Roles and Policies
+# 
+# This file defines roles and policies for the ECS module.
+# ===============================================================
+
+# ------------------------------------------------------
 # ECS Task Execution Role (for pulling images & logging)
-# ----------------------------------------
+# ------------------------------------------------------
+
+# ECS Task Execution Role
 resource "aws_iam_role" "ecs_task_execution_role" {
   name = "ecsTaskExecutionRole"
 
@@ -16,7 +24,7 @@ resource "aws_iam_role" "ecs_task_execution_role" {
   })
 }
 
-# Attach AWS Managed Policy for ECS Task Execution Role
+# Attach AWS managed Policy for ECS Task Execution Role
 resource "aws_iam_policy_attachment" "ecs_task_execution_attachment" {
   name       = "ecs-task-execution-policy"
   roles      = [aws_iam_role.ecs_task_execution_role.name]

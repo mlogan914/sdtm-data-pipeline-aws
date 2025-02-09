@@ -1,3 +1,9 @@
+# ================================================================
+# Glue - Variables
+# 
+# This file defines input variables for the Glue module.
+# ================================================================
+
 variable "raw_bucket_name" {
   type        = string
   description = "The name of the S3 bucket for raw data"

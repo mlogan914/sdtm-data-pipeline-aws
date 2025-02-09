@@ -1,3 +1,9 @@
+# ================================================================
+# S3 Module - Outputs
+# 
+# This file defines outputs from the s3 module.
+# ===============================================================
+
 output "raw_bucket_name" {
   value = aws_s3_bucket.raw-prd-bucket.bucket
 }

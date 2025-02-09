@@ -1,3 +1,9 @@
+# ================================================================
+# VPC Module - Outputs
+# 
+# This file defines outputs from the VPC module.
+# ===============================================================
+
 output "vpc_id" {
   value = aws_vpc.main.id
 }

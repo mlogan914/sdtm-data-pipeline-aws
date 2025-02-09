@@ -1,3 +1,9 @@
+# ================================================================
+# S3 - Variables
+# 
+# This file defines input variables for the s3 module.
+# ================================================================
+
 variable "raw_bucket_name" {
   type        = string
   description = "The name of the S3 bucket for raw data"

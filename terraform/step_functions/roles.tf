@@ -1,3 +1,9 @@
+# ================================================================
+# Step Functions Module - IAM Roles and Policies
+# 
+# This file defines roles and policies for the Step Functions module.
+# ===============================================================
+
 # Step Functions Service Role
 resource "aws_iam_role" "step_function_role" {
   name = "step-function-role"
@@ -62,7 +68,7 @@ resource "aws_iam_policy" "step_function_policy" {
     {
       "Effect": "Allow",
       "Action": "SNS:Publish",
-      "Resource": "${var.sns_topic_glue_arn}"
+      "Resource": "${var.sns_topic_arn}"
     },
     {
       "Effect": "Allow",
