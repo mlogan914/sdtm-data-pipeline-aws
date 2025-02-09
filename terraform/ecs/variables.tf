@@ -1,3 +1,9 @@
+# ================================================================
+# ECS Module - Variables
+# 
+# This file defines input variables for the ECS module.
+# ================================================================
+
 variable "vpc_id" {
   type = string
 }

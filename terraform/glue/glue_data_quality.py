@@ -21,7 +21,7 @@ EvaluateDataQuality_node1736981880298_ruleset = """
     # Example rules: Completeness "colA" between 0.4 and 0.8, ColumnCount > 10
     Rules = [
         RowCount > 0,
-        ColumnCount = 17,
+        ColumnCount = 29,
         IsComplete "subject"
     ]
 """

@@ -1,3 +1,9 @@
+# ================================================================
+# Step Functions Module - Variables
+# 
+# This file defines input variables for the Step Functions module.
+# ================================================================
+
 variable glue_crawler_arn {
   type        = string
   description = "ARN of the Glue Crawler"
@@ -12,14 +18,19 @@ variable lambda_function_arn {
   description = "ARN of the TRIGGER lambda Function"
 }
 
-variable sns_topic_glue_arn {
+variable sns_topic_arn {
   type        = string
-  description = "ARN of the Glue Topic"
+  description = "ARN of the SNS Topic"
 }
 
 variable ecs_task_transform_arn {
   type        = string
   description = "ARN of the ECS transform task"
+}
+
+variable ecs_task_validate_arn {
+  type        = string
+  description = "ARN of the ECS validate task"
 }
 
 variable ecs_task_execution_role_arn {

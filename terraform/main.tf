@@ -61,10 +61,11 @@ module "step_functions" {
   glue_job_arn     = module.glue.glue_job_arn
 
   # Inputs from SNS
-  sns_topic_glue_arn = module.sns.sns_topic_glue_arn
+  sns_topic_arn = module.sns.sns_topic_arn
 
   # Inputs form ECS
   ecs_task_transform_arn      = module.ecs.ecs_task_transform_arn
+  ecs_task_validate_arn       = module.ecs.ecs_task_validate_arn
   ecs_task_execution_role_arn = module.ecs.ecs_task_execution_role_arn
   ecs_cluster_arn             = module.ecs.ecs_cluster_arn
 

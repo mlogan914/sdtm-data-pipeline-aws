@@ -1,6 +1,11 @@
 # =============================================================
 # AWS Step Functions Configuration
-# This provisions Step Function workflow.
+# This provisions a Step Function workflow for Lambda, Glue Crawler,
+# Data Quality Checks, and ECS Tasks.
+#
+# NOTE:
+# - ECS network and task inputs are parameterized to allow dynamic input during deployment.
+# - ARN and resource IDs are parameterized to avoid hardcoding values that change per deployment.
 # ============================================================
 
 # ---------------------------------------
@@ -13,9 +18,9 @@ resource "aws_sfn_state_machine" "my_state_machine" {
   definition = <<ASL
 {
   "Comment": "Step Functions workflow for Lambda, Glue Crawler, Data Quality Checks, and ECS Task",
-  "StartAt": "Lambda Invoke",
+  "StartAt": "LambdaInvoke",
   "States": {
-    "Lambda Invoke": {
+    "LambdaInvoke": {
       "Type": "Task",
       "Resource": "arn:aws:states:::lambda:invoke",
       "Parameters": {
@@ -64,12 +69,12 @@ resource "aws_sfn_state_machine" "my_state_machine" {
         {
           "Variable": "$.Crawler.State",
           "StringEquals": "READY",
-          "Next": "Glue StartJobRun"
+          "Next": "GlueStartJobRun"
         }
       ],
       "Default": "WaitForCrawler"
     },
-    "Glue StartJobRun": {
+    "GlueStartJobRun": {
       "Type": "Task",
       "Resource": "arn:aws:states:::aws-sdk:glue:startJobRun",
       "Parameters": {
@@ -94,12 +99,12 @@ resource "aws_sfn_state_machine" "my_state_machine" {
         {
           "Variable": "$.GetJobRunResponse.JobRun.JobRunState",
           "StringEquals": "SUCCEEDED",
-          "Next": "ECS RunTask"
+          "Next": "ECSRunTaskTRANSFORM"
         },
         {
           "Variable": "$.GetJobRunResponse.JobRun.JobRunState",
           "StringEquals": "FAILED",
-          "Next": "SNS Publish"
+          "Next": "SNSPublish"
         },
         {
           "Variable": "$.GetJobRunResponse.JobRun.JobRunState",
@@ -107,14 +112,14 @@ resource "aws_sfn_state_machine" "my_state_machine" {
           "Next": "WaitBeforeRecheckingJobStatus"
         }
       ],
-      "Default": "SNS Publish"
+      "Default": "SNSPublish"
     },
     "WaitBeforeRecheckingJobStatus": {
       "Type": "Wait",
       "Seconds": 5,
       "Next": "GetJobRunStatus"
     },
-    "ECS RunTask": {
+    "ECSRunTaskTRANSFORM": {
       "Type": "Task",
       "Resource": "arn:aws:states:::ecs:runTask",
       "Parameters": {
@@ -134,14 +139,52 @@ resource "aws_sfn_state_machine" "my_state_machine" {
           }
         }
       },
+      "Next": "ECSRunTaskVALIDATE",
+      "Catch": [
+        {
+          "ErrorEquals": [
+            "States.ALL"
+          ],
+          "Next": "SNSPublish"
+        }
+      ]
+    },
+    "ECSRunTaskVALIDATE": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::ecs:runTask",
+      "Parameters": {
+        "LaunchType": "FARGATE",
+        "Cluster": "arn:aws:ecs:us-west-1:525425830681:cluster/ecs-cluster-5201201",
+        "TaskDefinition": "${var.ecs_task_validate_arn}",
+        "NetworkConfiguration": {
+          "AwsvpcConfiguration": {
+            "Subnets": [
+              ${var.private_subnets},
+              ${var.public_subnets}
+            ],
+            "SecurityGroups": [
+              "${var.ecs_sg_id}"
+            ],
+            "AssignPublicIp": "ENABLED"
+          }
+        }
+      },
+      "Catch": [
+        {
+          "ErrorEquals": [
+            "States.ALL"
+          ],
+          "Next": "SNSPublish"
+        }
+      ],
       "End": true
     },
-    "SNS Publish": {
+    "SNSPublish": {
       "Type": "Task",
       "Resource": "arn:aws:states:::sns:publish",
       "Parameters": {
-        "TopicArn": "arn:aws:sns:us-west-1:525425830681:sns-glue-5201201",
-        "Subject": "Glue Job Failure Notification",
+        "TopicArn": "arn:aws:sns:us-west-1:525425830681:sns-topic-5201201",
+        "Subject": "ECS Task Failure Notification",
         "Message.$": "$"
       },
       "End": true
