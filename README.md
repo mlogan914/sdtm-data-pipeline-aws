@@ -17,7 +17,7 @@ This pipeline is a fully serverless data processing framework built using AWS se
 ## Key Features
 
 ### Serverless AWS-Based Architecture
--`S3`: For raw data storage, staging, and final outputs.
+- `S3`: For raw data storage, staging, and final outputs.
 - `Step Functions`: To manage and orchestrate the pipeline stages.
 - `Glue`: For metadata management, data quality checks, and centralized metadata repository updates.
 - `ECS (Fargate)`: To execute transformation and validation scripts.
@@ -84,7 +84,7 @@ Initially, the P21 validation step was planned as part of the pipeline, but due 
 ### Error Handling & Data Quality
 - Error handling and data quality checks ensure reliability.
 - Data anonymization is supported to comply with privacy regulations.
-- Flexible output formats:`CSV, Parquet, and XPT`.
+- Flexible output formats: `CSV, Parquet, and XPT`.
 
 ### CI/CD
 - `GitHub Actions`: Implements CI/CD workflows for automated deployment of transformation scripts to AWS ECS.
