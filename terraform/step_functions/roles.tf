@@ -75,7 +75,8 @@ resource "aws_iam_policy" "step_function_policy" {
       "Action": "ecs:RunTask",
       "Resource": [
         "${var.ecs_cluster_arn}",
-        "${var.ecs_task_transform_arn}"
+        "${var.ecs_task_transform_arn}",
+        "${var.ecs_task_validate_arn}"
     ]
     },
     {
@@ -84,7 +85,10 @@ resource "aws_iam_policy" "step_function_policy" {
         "ecs:RunTask",
         "ecs:DescribeTasks"
       ],
-      "Resource": "${var.ecs_task_transform_arn}"
+      "Resource": [
+        "${var.ecs_task_transform_arn}",
+        "${var.ecs_task_validate_arn}"
+    ]
     },
     {
       "Effect": "Allow",
