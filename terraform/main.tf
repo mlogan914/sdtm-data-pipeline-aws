@@ -62,7 +62,7 @@ module "step_functions" {
 
   # Inputs from VPC
   private_subnets = join(",", [for subnet in module.vpc.private_subnets : "\"${subnet}\""])
-  # TODO: Add public subnet and security group here
+  public_subnets  = join(",", [for subnet in module.vpc.public_subnets : "\"${subnet}\""])
 }
 
 # SNS Module: Manages SNS for notifications

@@ -125,7 +125,7 @@ resource "aws_sfn_state_machine" "my_state_machine" {
           "AwsvpcConfiguration": {
             "Subnets": [
               ${var.private_subnets},
-              "subnet-0e35bf95056fc68c0"
+              ${var.public_subnets}
             ],
             "SecurityGroups": [
               "sg-02071dac5218410e0"
