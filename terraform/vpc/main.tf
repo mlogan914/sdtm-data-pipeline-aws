@@ -22,7 +22,7 @@ resource "aws_vpc" "main" {
 # Create Subnets
 # ----------------------------------------
 
-# Private Subnet
+# Private Subnet(s)
 resource "aws_subnet" "private" {
   count                   = 2
   vpc_id                  = aws_vpc.main.id
@@ -39,7 +39,7 @@ resource "aws_subnet" "private" {
 # This is so ECS tasks (in a private subnet) can pull images from ECR
 # -------------------------------------------------------------------
 
-# Public Subnet
+# Public Subnet(s)
 resource "aws_subnet" "public" {
   count                   = 1
   vpc_id                  = aws_vpc.main.id
