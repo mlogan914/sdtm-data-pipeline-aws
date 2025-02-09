@@ -2,7 +2,7 @@
 
 ## Overview
 
-This project presents a design concept for an automated data pipeline tailored to the pharmaceutical and medical device industries. The pipeline transforms raw clinical data from diverse sources—including EDC, EHR, laboratory systems, wearables, manual uploads (e.g., CSVs), and APIs—into CDISC SDTM-compliant datasets. By automating data processing, compliance validation, and output generation, the pipeline streamlines workflows and ensures high-quality, regulatory-compliant datasets for clinical trials.
+This project presents a *minimally viable pipeline* for automating data processing and transformation in the pharmaceutical and medical device industries. The pipeline transforms raw clinical data from diverse sources—including EDC, EHR, laboratory systems, wearables, manual uploads (e.g., CSVs), and APIs—into CDISC SDTM-compliant datasets. By automating data processing, compliance validation, and output generation, the pipeline streamlines workflows and ensures high-quality, regulatory-compliant datasets for clinical trials.
 
 SDTM (Study Data Tabulation Model) is a standardized format developed by CDISC (Clinical Data Interchange Standards Consortium) for organizing and submitting clinical trial data to regulatory agencies such as the FDA and PMDA. It enhances consistency, traceability, and interoperability across studies.
 
@@ -17,16 +17,16 @@ This pipeline is a fully serverless data processing framework built using AWS se
 ## Key Features
 
 ### Serverless AWS-Based Architecture
-- **S3**: For raw data storage, staging, and final outputs.
-- **Step Functions**: To manage and orchestrate the pipeline stages.
-- **Glue**: For metadata management, data quality checks, and centralized metadata repository updates.
-- **ECS (Fargate)**: To execute transformation and validation scripts.
-- **Lambda**: For event-driven workflows and metadata updates.
-- **Athena**: Enables serverless SQL-based querying for analysis and validation of processed datasets.
-- **CloudWatch**: Provides monitoring, logging, and alerts to ensure the pipeline runs smoothly and identifies issues in real-time.
+-` **S3**`: For raw data storage, staging, and final outputs.
+- `**Step Functions**`: To manage and orchestrate the pipeline stages.
+- `**Glue**`: For metadata management, data quality checks, and centralized metadata repository updates.
+- `**ECS (Fargate)**`: To execute transformation and validation scripts.
+- `**Lambda**`: For event-driven workflows and metadata updates.
+- `**Athena**`: Enables serverless SQL-based querying for analysis and validation of processed datasets.
+- `**CloudWatch**`: Provides monitoring, logging, and alerts to ensure the pipeline runs smoothly and identifies issues in real-time.
 
 ### Infrastructure as Code (IaC)
-- **Terraform**: Used for provisioning scalable, reusable, and automated infrastructure.
+- `**Terraform**`: Used for provisioning scalable, reusable, and automated infrastructure.
 
 #### Directory Structure
 ```
@@ -72,10 +72,10 @@ This pipeline is a fully serverless data processing framework built using AWS se
         └── outputs.tf              # VPC outputs
 ```
 ### Compliance Validation
-- **Pinnacle21 CLI**: Integrated for CDISC compliance checks, ensuring adherence to regulatory standards. Future iterations will address broader regulatory compliance and full domain coverage.
+- `**Pinnacle21 CLI**`: Integrated for CDISC compliance checks, ensuring adherence to regulatory standards. Future iterations will address broader regulatory compliance and full domain coverage.
 - Pinnacle21 (Previously known as OpenCDISC), is a software solution widely used in the clinical research industry for ensuring compliance with CDISC (Clinical Data Interchange Standards Consortium) standards. It provides automated validation checks for SDTM (Study Data Tabulation Model) datasets, ensuring that data meets regulatory requirements for submission to agencies like the FDA.
-> **Note**: Pinnacle21 Community and its CLI are only supported on Windows and macOS, making Linux OS incompatible.
-> To work around this, a placeholder script has been added to simulate a P21 validation run. This can later be replaced with custom scripts if needed.
+> - **Note**: Pinnacle21 Community and its CLI are only supported on Windows and macOS, making Linux OS incompatible.
+> - To work around this, a placeholder script has been added to simulate a P21 validation run. This can later be replaced with custom scripts if needed.
 Initially, the P21 validation step was planned as part of the pipeline, but due to this limitation, it is not feasible. An alternative would be to provision a Windows VM for validation, but this may introduce unnecessary overhead. A more efficient approach could be to run the tool externally from the pipeline.
 
 ### Metadata Management
@@ -83,11 +83,11 @@ Initially, the P21 validation step was planned as part of the pipeline, but due 
 
 ### Error Handling & Data Quality
 - Error handling and data quality checks ensure reliability.
- Data anonymization is supported to comply with privacy regulations.
+- Data anonymization is supported to comply with privacy regulations.
 - Flexible output formats: CSV, Parquet, and XPT.
 
 ### CI/CD
-- **GitHub Actions**: Implements CI/CD workflows for automated deployment of transformation scripts to AWS ECS.
+- `**GitHub Actions**`: Implements CI/CD workflows for automated deployment of transformation scripts to AWS ECS.
 
 ---
 
