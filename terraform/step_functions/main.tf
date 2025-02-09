@@ -120,12 +120,11 @@ resource "aws_sfn_state_machine" "my_state_machine" {
       "Parameters": {
         "LaunchType": "FARGATE",
         "Cluster": "arn:aws:ecs:us-west-1:525425830681:cluster/ecs-cluster-5201201",
-        "TaskDefinition": "arn:aws:ecs:us-west-1:525425830681:task-definition/sdtm-task-transform:2",
+        "TaskDefinition": "${var.ecs_task_transform_arn}",
         "NetworkConfiguration": {
           "AwsvpcConfiguration": {
             "Subnets": [
-              "subnet-034df93d3de3e4879",
-              "subnet-00d4b486d17db7b20",
+              ${var.private_subnets},
               "subnet-0e35bf95056fc68c0"
             ],
             "SecurityGroups": [
