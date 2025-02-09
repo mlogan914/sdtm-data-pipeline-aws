@@ -36,3 +36,8 @@ variable private_subnets {
     type  = string
     description = "List of private subnet IDs"
 }
+
+variable public_subnets {
+    type  = string
+    description = "List of public subnet IDs"
+}
