@@ -31,3 +31,8 @@ variable ecs_cluster_arn {
   type        = string
   description = "ARN of the ECS cluster"
 }
+
+variable private_subnets {
+    type  = string
+    description = "List of private subnet IDs"
+}

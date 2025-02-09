@@ -55,10 +55,14 @@ module "step_functions" {
   # Inputs from SNS
   sns_topic_glue_arn = module.sns.sns_topic_glue_arn
 
-  #Inputs form ECS
+  # Inputs form ECS
   ecs_task_transform_arn      = module.ecs.ecs_task_transform_arn
   ecs_task_execution_role_arn = module.ecs.ecs_task_execution_role_arn
   ecs_cluster_arn             = module.ecs.ecs_cluster_arn
+
+  # Inputs from VPC
+  private_subnets = join(",", [for subnet in module.vpc.private_subnets : "\"${subnet}\""])
+  # TODO: Add public subnet and security group here
 }
 
 # SNS Module: Manages SNS for notifications
