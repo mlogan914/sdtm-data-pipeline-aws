@@ -128,7 +128,7 @@ resource "aws_sfn_state_machine" "my_state_machine" {
               ${var.public_subnets}
             ],
             "SecurityGroups": [
-              "sg-02071dac5218410e0"
+              "${var.ecs_sg_id}"
             ],
             "AssignPublicIp": "ENABLED"
           }

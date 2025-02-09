@@ -41,3 +41,8 @@ variable public_subnets {
     type  = string
     description = "List of public subnet IDs"
 }
+
+variable ecs_sg_id {
+    type  = string
+    description = "ECS security group"
+}

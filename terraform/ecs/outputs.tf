@@ -9,3 +9,7 @@ output "ecs_task_transform_arn" {
 output "ecs_cluster_arn" {
     value = aws_ecs_cluster.ecs_cluster.arn
 }
+
+output "ecs_sg_id" {
+    value = aws_security_group.ecs_sg.id
+}

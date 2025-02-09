@@ -2,8 +2,10 @@
 # Root Module Configuration
 # Configures resources and inputs for the SDTM data pipeline.
 # =============================================================
-
-# S3 Module: Handles S3 buckets for raw data and scripts storage
+#---------------------------------------------------------------
+# S3 Module: 
+# Handles S3 buckets for raw data and scripts storage
+#---------------------------------------------------------------
 module "s3" {
   source              = "./s3"
   raw_bucket_name     = "raw-prd-5201201"
@@ -25,7 +27,10 @@ module "s3" {
   ecs_task_execution_role_arn = module.ecs.ecs_task_execution_role_arn
 }
 
-# Lambda Module: Handles the Lambda functions for processing raw data
+#---------------------------------------------------------------
+# Lambda Module: 
+# Handles the Lambda functions for processing raw data
+#---------------------------------------------------------------
 module "lambda" {
   source = "./lambda"
 }
@@ -41,7 +46,10 @@ module "glue" {
   scripts_bucket_arn  = module.s3.scripts_bucket_arn
 }
 
-# Step Functions Module: Coordinates the data pipeline workflow
+#---------------------------------------------------------------
+# Step Functions Module: 
+# Coordinates the data pipeline workflow
+#---------------------------------------------------------------
 module "step_functions" {
   source = "./step_functions"
 
@@ -63,9 +71,13 @@ module "step_functions" {
   # Inputs from VPC
   private_subnets = join(",", [for subnet in module.vpc.private_subnets : "\"${subnet}\""])
   public_subnets  = join(",", [for subnet in module.vpc.public_subnets : "\"${subnet}\""])
+  ecs_sg_id       = module.ecs.ecs_sg_id
 }
 
-# SNS Module: Manages SNS for notifications
+#---------------------------------------------------------------
+# SNS Module: 
+# Manages SNS for notifications
+#---------------------------------------------------------------
 module "sns" {
   source = "./sns"
 }
@@ -74,7 +86,10 @@ module "vpc" {
   source = "./vpc"
 }
 
-# ECS Module: Orchestrates containers for main data processing
+#---------------------------------------------------------------
+# ECS Module: 
+# Orchestrates containers for main data processing
+#---------------------------------------------------------------
 module "ecs" {
   source            = "./ecs"
   vpc_id            = module.vpc.vpc_id
