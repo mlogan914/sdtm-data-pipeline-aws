@@ -20,7 +20,7 @@ This pipeline is a fully serverless data processing framework built using AWS se
 - `S3` – Stores raw, staged, final SDTM datasets, complicance reports, and logs.
 - `Step Functions` – Orchestrates ingestion & processing, validation, and transformation workflows.
 - `Glue` – Manages metadata, enforces data quality checks, and updates centralized metadata repositories.
-- `ECS` (Fargate) – Runs SDTM transformation and validation scripts.
+- `ECS (Fargate)` – Runs SDTM transformation and validation scripts.
 - `Lambda` – Handles event-driven workflows, metadata updates, and auxiliary tasks.
 - `CloudWatch` – Provides real-time monitoring, logging, and alerts to track pipeline performance.
 - `Athena` – Enables serverless SQL-based querying for end users.
