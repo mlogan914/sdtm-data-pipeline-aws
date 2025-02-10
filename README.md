@@ -1,4 +1,4 @@
-# Automated SDTM Data Pipeline
+# 🔹 Automated Serverless SDTM Data Pipeline on AWS
 
 ## Overview
 SDTM (Study Data Tabulation Model) is a standardized structure for human clinical trial data tabulations developed by CDISC (Clinical Data Interchange Standards Consortium) for organizing and submitting clinical trial data to regulatory agencies such as the FDA and PMDA. It enhances consistency, traceability, and interoperability across studies.
@@ -83,6 +83,16 @@ This pipeline is a fully serverless data processing framework built using AWS se
 - A possible alternative is provisioning a Windows-based VM for validation, but this may introduce unnecessary infrastructure overhead.  
 - A more efficient approach is to run Pinnacle21 on datasets externally from the pipeline.   
 
+### PII Redaction
+When storing clinical datasets in Amazon S3 for use across multiple applications, it’s required to redact sensitive information. For example, before processing patient-reported data, PII should be removed to comply with privacy regulations such as HIPPA and GDPR.
+
+How It Works
+`S3 Object Lambda Integration`: When raw data is requested from S3, an S3 Object Lambda function intercepts the request and applies PII redaction before passing the data to the pipeline.
+
+![diagram](object_lambda.png)
+
+You can use the prebuilt Lambda function for PII redaction by attaching it to an S3 Object Lambda Access Point. When an application makes a standard S3 GET request, the access point triggers the Lambda function to detect and redact PII from the data. The redacted data is then returned to the application.
+
 ### Metadata Management
 `AWS Glue Centralized Metadata Repository`
 
@@ -113,7 +123,6 @@ This pipeline is a fully serverless data processing framework built using AWS se
 
 - `Error Handling`: Logs issues in CloudWatch and triggers SNS notifications for critical failures. Provides a foundation for scaling error management. 
 - `Data Quality Checks`: Supports duplicate detection, missing value checks, and range validation at ingestion, with flexibility for customization and expansion.
-- `Data Anonymization`: Designed to support PII removal to comply with HIPAA and GDPR regulations.
 - Output Formats: Supports CSV, Parquet, and XPT for broad compatibility.
 
 ### CI/CD
