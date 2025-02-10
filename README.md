@@ -1,19 +1,15 @@
-# 🔹 Automated Serverless SDTM Data Pipeline on AWS
+# Automated Serverless SDTM Data Pipeline on AWS
 
 ## Overview
 SDTM (Study Data Tabulation Model) is a standardized structure for human clinical trial data tabulations developed by CDISC (Clinical Data Interchange Standards Consortium) for organizing and submitting clinical trial data to regulatory agencies such as the FDA and PMDA. It enhances consistency, traceability, and interoperability across studies.
 
 This project presents a *minimally viable pipeline* for automating SDTM-compliant data transformation in the pharmaceutical and medical device industries. The pipeline ingests raw clinical data from diverse sources—including Electronic Data Capture (EDC), laboratory systems, wearable devices, manual uploads, and APIs—and processs it into CDISC SDTM datasets.
-
 ---
-
 ## Architecture Diagram
 This pipeline is a fully serverless data processing framework built using AWS services to automate data transformation, integration, and validation of data, eliminating infrastructure management while optimizing performance.
 
 ![diagram](architechture.png)
-
 ---
-
 ## Key Features
 
 ### Serverless AWS-Based Architecture
@@ -149,7 +145,7 @@ You can use the prebuilt Lambda function for PII redaction by attaching it to an
 - S3 Object Lambda is invoked to filter and redact PII from patient-reported data before ingestion.
 - The redacted data is then stored in a cleaned S3 bucket.
 - Once processed, the pipeline proceeds to the next stage.
-
+---
 ### 4. Data Quality Checks
 #### AWS Glue Crawler
 - Step Functions trigger an AWS Glue Crawler to crawl raw data and update the centralized metadata repository.
