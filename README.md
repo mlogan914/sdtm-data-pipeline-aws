@@ -94,30 +94,28 @@ How It Works
 You can use the prebuilt Lambda function for PII redaction by attaching it to an S3 Object Lambda Access Point. When an application makes a standard S3 GET request, the access point triggers the Lambda function to detect and redact PII from the data. The redacted data is then returned to the application.
 
 ### Metadata Management
-`AWS Glue Centralized Metadata Repository`
+**Centralized Data Catalog**
+- AWS Glue stores metadata in the AWS Glue Data Catalog, which acts as a central repository for:
+- Table and schema definitions (e.g., column names, data types).
+- Locations of raw and transformed datasets (S3 paths).
+- Partition information for optimizing queries in Athena.
 
-1. Centralized Data Catalog
-  - AWS Glue stores metadata in the AWS Glue Data Catalog, which acts as a central repository for:
-    - Table and schema definitions (e.g., column names, data types).
-    - Locations of raw and transformed datasets (S3 paths).
-    - Partition information for optimizing queries in Athena.
+**Schema Management**
+- Automatically detects schemas from raw clinical data sources.
+- Updates schema information dynamically when new data arrives.
+- Ensures that transformations align with expected SDTM structures.
 
-2. Schema Management
-  - Automatically detects schemas from raw clinical data sources.
-  - Updates schema information dynamically when new data arrives.
-  - Ensures that transformations align with expected SDTM structures.
+**Data Quality & Validation**
+- Helps enforce schema validation by detecting missing or unexpected fields.
+- Enables duplicate detection and record integrity checks before transformation.
 
-3. Data Quality & Validation
-  - Helps enforce schema validation by detecting missing or unexpected fields.
-  - Enables duplicate detection and record integrity checks before transformation.
+**Athena Integration**
+- Once data is cataloged, Amazon Athena can query it directly using SQL, without requiring additional transformations.
+- This allows for quick validation and compliance checks before submission.
 
-4. Querying & Analysis (Athena Integration)
-  - Once data is cataloged, Amazon Athena can query it directly using SQL, without requiring additional transformations.
-  - This allows for quick validation and compliance checks before submission.
-
-5. Pipeline Orchestration
-  - Glue metadata tables act as intermediary checkpoints for tracking progress between pipeline stages.
-  - Downstream processes (e.g., ECS transformations, Pinnacle21 validation) can refer to Glue tables instead of raw files.
+**Pipeline Orchestration**
+- Glue metadata tables act as intermediary checkpoints for tracking progress between pipeline stages.
+- Downstream processes (e.g., ECS transformations, Pinnacle21 validation) can refer to Glue tables instead of raw files.
 
 ### Error Handling & Data Quality
 
