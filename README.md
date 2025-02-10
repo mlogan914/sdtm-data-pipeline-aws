@@ -1,14 +1,14 @@
 # Automated SDTM Data Pipeline
 
 ## Overview
-SDTM (Study Data Tabulation Model) is a standardized format developed by CDISC (Clinical Data Interchange Standards Consortium) for organizing and submitting clinical trial data to regulatory agencies such as the FDA and PMDA. It enhances consistency, traceability, and interoperability across studies.
+SDTM (Study Data Tabulation Model) is a standardized structure for human clinical trial data tabulations developed by CDISC (Clinical Data Interchange Standards Consortium) for organizing and submitting clinical trial data to regulatory agencies such as the FDA and PMDA. It enhances consistency, traceability, and interoperability across studies.
 
-This project presents a *minimally viable pipeline* for automating SDTM-compliant data transformation in the pharmaceutical and medical device industries. The pipeline ingests raw clinical data from diverse sources—including Electronic Data Capture (EDC), laboratory systems, wearable devices, uploads, and APIs—and processs it into CDISC SDTM datasets.
+This project presents a *minimally viable pipeline* for automating SDTM-compliant data transformation in the pharmaceutical and medical device industries. The pipeline ingests raw clinical data from diverse sources—including Electronic Data Capture (EDC), laboratory systems, wearable devices, manual uploads, and APIs—and processs it into CDISC SDTM datasets.
 
 ---
 
 ## Architecture Diagram
-This pipeline is a fully serverless data processing framework built using AWS services to automate data transformation, integration, and validation for clinical trial data, eliminating infrastructure management while optimizing performance.
+This pipeline is a fully serverless data processing framework built using AWS services to automate data transformation, integration, and validation of data, eliminating infrastructure management while optimizing performance.
 
 ![diagram](architechture.png)
 
@@ -18,7 +18,7 @@ This pipeline is a fully serverless data processing framework built using AWS se
 
 ### Serverless AWS-Based Architecture
 - `S3 Object Lambda` – Filters and redacts PII from patient-reported outcomes before ingestion.
-- `S3` – Stores raw, staged, and final SDTM datasets, output complicance reports and logs.
+- `S3` – Stores raw, staged, final SDTM datasets, complicance reports, and logs.
 - `Step Functions` – Orchestrates ingstion & processing, validation, and transformation workflows.
 - `Glue` – Manages metadata, enforces data quality checks, and updates centralized metadata repositories.
 - `ECS` (Fargate) – Runs SDTM transformation and validation scripts.
@@ -73,38 +73,58 @@ This pipeline is a fully serverless data processing framework built using AWS se
         └── outputs.tf              # VPC outputs
 ```
 ### Compliance Validation  
-
-- `Pinnacle21 CLI` is integrated for **CDISC compliance checks**, ensuring SDTM datasets meet regulatory standards for submission to agencies like the **FDA and PMDA**.  
-- `Pinnacle21 (formerly OpenCDISC)` is a widely used validation tool in the clinical research industry, providing automated **SDTM compliance verification**.  
+- `Pinnacle21 (formerly OpenCDISC)` is a widely used validation tool in the clinical research industry, providing automated SDTM compliance verification. 
+- `Pinnacle21 CLI` is integrated for CDISC compliance checks, to ensue SDTM datasets meet regulatory standards for submission.  
 
 #### Platform Limitations & Workarounds  
 > ⚠ **Note:** Pinnacle21 CLI **only supports Windows and macOS**, making it incompatible with Linux-based environments.  
 
 - To bypass this limitation, a placeholder script has been added to simulate a P21 validation run. This can be replaced with a custom validation solution in the future.  
 - A possible alternative is provisioning a Windows-based VM for validation, but this may introduce unnecessary infrastructure overhead.  
-- A more efficient approach is to run Pinnacle21 on output datasets externally from the pipeline.   
+- A more efficient approach is to run Pinnacle21 on idatasets externally from the pipeline.   
 
 ### Metadata Management
-- `AWS Glue Centralized metadata repository`- Used to ensure consistent data lineage and visibility across pipeline stages.
+`AWS Glue Centralized Metadata Repository`
+
+1. Centralized Data Catalog
+
+AWS Glue stores metadata in the AWS Glue Data Catalog, which acts as a central repository for:
+- Table and schema definitions (e.g., column names, data types).
+- Locations of raw and transformed datasets (S3 paths).
+- Partition information for optimizing queries in Athena.
+
+2. Schema Management
+- Automatically detects schemas from raw clinical data sources.
+- Updates schema information dynamically when new data arrives.
+- Ensures that transformations align with expected SDTM structures.
+
+3. Data Quality & Validation
+- Helps enforce schema validation by detecting missing or unexpected fields.
+- Enables duplicate detection and record integrity checks before transformation.
+
+4. Querying & Analysis (Athena Integration)
+- Once data is cataloged, Amazon Athena can query it directly using SQL, without requiring additional transformations.
+- This allows for quick validation and compliance checks before submission.
+
+5. Pipeline Orchestration
+- Glue metadata tables act as intermediary checkpoints for tracking progress between pipeline stages.
+- Downstream processes (e.g., ECS transformations, Pinnacle21 validation) can refer to Glue tables instead of raw files.
 
 ### Error Handling & Data Quality
 - `Basic Error Handling`: The pipeline includes basic error handling mechanisms, ensuring that issues are caught and logged for further review. Errors are routed to CloudWatch for easy monitoring, and SNS notifications are triggered to alert the team when critical failures occur. While this approach is simple, it provides a solid foundation for scaling up error management in future iterations.
 
-- `Data Quality Checks`: Supports data validation at ingestion to ensure integrity. This includes duplicate detection, missing value checks, and range validation, guaranteeing that the data meets data quality rules before transformation.  While these checks ensure that data integrity is maintained at a foundational level, the pipeline is designed to be easily customized and expanded for more robust validation checks as needed in the future. This allows for the inclusion of more complex quality controls as the pipeline scales.
+- `Data Quality Checks`: Supports data validation at ingestion to ensure integrity. This includes duplicate detection, missing value checks, and range validation, guaranteeing that the data meets data quality rules before transformation. While these checks ensure integrity at a foundational level, the pipeline is designed to be easily customized and expanded for more robust validation checks as needed.
 
-- `Data Anonymization`: The pipeline supports anonymization of sensitive data, ensuring that personally identifiable information (PII) is removed to comply with privacy regulations like HIPAA and GDPR. This helps mitigate risks associated with handling healthcare data and maintains privacy across all stages of processing.
+- `Data Anonymization`: The pipeline supports anonymization of sensitive data, ensuring that personally identifiable information (PII) is removed to comply with privacy regulations like HIPAA and GDPR.
 
-`Flexible Output Formats`: Processed datasets are available in a variety of output formats including CSV, Parquet, and XPT to ensure compatibility with downstream systems and tools.
+- `Flexible Output Formats`: Processed datasets are available in CSV, Parquet, and XPT to ensure compatibility with downstream systems and tools.
 
 ### CI/CD
 - `GitHub Actions`: Implements CI/CD workflows for automated deployment of transformation scripts to AWS ECS.
 
 ---
 
-## Step Functions Workflow
-![diagram](stepfunctions_graph.png)
-
-## High-Level Architecture
+## Pipeline Execution Flow
 
 ### 1. Initial Development Stage
 #### Development Workflow
@@ -129,14 +149,13 @@ This pipeline is a fully serverless data processing framework built using AWS se
 
 #### Quality Assurance
 - AWS Glue Data Quality checks are executed on the raw data:
-  - **If checks fail**:
-    - Notifications are sent via AWS SNS.
-    - Processing stops until issues are resolved.
-  - **If checks pass**:
-    - The pipeline proceeds to the next stage.
+- **If checks fail**:
+- Notifications are sent via AWS SNS.
+- Processing stops until issues are resolved.
+- **If checks pass**:
+- The pipeline proceeds to the next stage.
 
 ---
-
 ### 4. Data Transformation
 #### Processing
 - Step Functions trigger AWS ECS to execute transformation scripts on the raw data using custom code.
@@ -152,20 +171,20 @@ This pipeline is a fully serverless data processing framework built using AWS se
 
 #### Outcome
 - **If checks fail**:
-  - Notifications are sent via AWS SNS.
-  - Logs and reports are stored in the Audit S3 bucket for review.
+- Notifications are sent via AWS SNS.
+- Logs and reports are stored in the Audit S3 bucket for review.
 - **If checks pass**:
-  - Compliance reports and logs are saved in the Audit S3 bucket.
-  - The pipeline proceeds to the output stage.
+- Compliance reports and logs are saved in the Audit S3 bucket.
+- The pipeline proceeds to the output stage.
 
 ---
 
 ### 6. Output
 #### Final Output
 - Step Functions orchestrate the upload of transformed, SDTM-compliant datasets to the output S3 bucket in multiple formats:
-  - CSV
-  - Parquet
-  - XPT
+- CSV
+- Parquet
+- XPT
 
 ---
 
@@ -173,8 +192,16 @@ This pipeline is a fully serverless data processing framework built using AWS se
 #### Destination Metadata
 - Step Functions trigger an AWS Lambda function to update the metadata repository for the transformed datasets.
 
+### 8. Data Analysis & Validation
+#### Querying with Athena
+- Amazon Athena is used to perform serverless SQL-based queries on the transformed SDTM datasets.
+- End users (e.g., biostatisticians, statistical programmers etc.,) can validate data integrity, check compliance, and generate reports.
+
 ---
 
 ## Outcome
 This design concept lays the foundation for automating data processing and compliance workflows in the pharma and medical device industries. It simplifies operations while ensuring high-quality, compliant datasets that meet CDISC standards.
 
+
+## Step Functions Workflow
+![diagram](stepfunctions_graph.png)
