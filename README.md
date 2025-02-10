@@ -19,7 +19,7 @@ This pipeline is a fully serverless data processing framework built using AWS se
 ### Serverless AWS-Based Architecture
 - `S3 Object Lambda` – Filters and redacts PII from patient-reported outcomes before ingestion.
 - `S3` – Stores raw, staged, final SDTM datasets, complicance reports, and logs.
-- `Step Functions` – Orchestrates ingstion & processing, validation, and transformation workflows.
+- `Step Functions` – Orchestrates ingestion & processing, validation, and transformation workflows.
 - `Glue` – Manages metadata, enforces data quality checks, and updates centralized metadata repositories.
 - `ECS` (Fargate) – Runs SDTM transformation and validation scripts.
 - `Lambda` – Handles event-driven workflows, metadata updates, and auxiliary tasks.
@@ -110,13 +110,11 @@ This pipeline is a fully serverless data processing framework built using AWS se
   - Downstream processes (e.g., ECS transformations, Pinnacle21 validation) can refer to Glue tables instead of raw files.
 
 ### Error Handling & Data Quality
-- `Basic Error Handling`: The pipeline includes basic error handling mechanisms, ensuring that issues are caught and logged for further review. Errors are routed to CloudWatch for easy monitoring, and SNS notifications are triggered to alert the team when critical failures occur. While this approach is simple, it provides a solid foundation for scaling up error management in future iterations.
 
-- `Data Quality Checks`: Supports data validation at ingestion to ensure integrity. This includes duplicate detection, missing value checks, and range validation, guaranteeing that the data meets data quality rules before transformation. While these checks ensure integrity at a foundational level, the pipeline is designed to be easily customized and expanded for more robust validation checks as needed.
-
-- `Data Anonymization`: The pipeline supports anonymization of sensitive data, ensuring that personally identifiable information (PII) is removed to comply with privacy regulations like HIPAA and GDPR.
-
-- `Flexible Output Formats`: Processed datasets are available in CSV, Parquet, and XPT to ensure compatibility with downstream systems and tools.
+- `Error Handling`: Logs issues in CloudWatch and triggers SNS notifications for critical failures. Provides a foundation for scaling error management. 
+- `Data Quality Checks`: Supports duplicate detection, missing value checks, and range validation at ingestion, with flexibility for customization and expansion.
+- `Data Anonymization`: Designed to support PII removal to comply with HIPAA and GDPR regulations.
+- Output Formats: Supports CSV, Parquet, and XPT for broad compatibility.
 
 ### CI/CD
 - `GitHub Actions`: Implements CI/CD workflows for automated deployment of transformation scripts to AWS ECS.
@@ -141,8 +139,13 @@ This pipeline is a fully serverless data processing framework built using AWS se
 - An **S3 event notification** triggers an **AWS Lambda** function, which initiates **AWS Step Functions** to start the pipeline.
 
 ---
+### 3. PII Redaction (Pre-Ingestion)
+#### S3 Object Lambda
+- S3 Object Lambda is invoked to filter and redact PII from patient-reported data before ingestion.
+- The redacted data is then stored in a cleaned S3 bucket.
+- Once processed, the pipeline proceeds to the next stage.
 
-### 3. Data Quality Checks
+### 4. Data Quality Checks
 #### AWS Glue Crawler
 - Step Functions trigger an AWS Glue Crawler to crawl raw data and update the centralized metadata repository.
 
@@ -155,7 +158,7 @@ This pipeline is a fully serverless data processing framework built using AWS se
   - The pipeline proceeds to the next stage.
 
 ---
-### 4. Data Transformation
+### 5. Data Transformation
 #### Processing
 - Step Functions trigger AWS ECS to execute transformation scripts on the raw data using custom code.
 
@@ -164,7 +167,7 @@ This pipeline is a fully serverless data processing framework built using AWS se
 
 ---
 
-### 5. Pinnacle21 Compliance Checks
+### 6. Pinnacle21 Compliance Checks
 #### Validation
 - Step Functions trigger AWS ECS to run Pinnacle21 CLI for CDISC compliance checks on the transformed datasets.
 
@@ -178,7 +181,7 @@ This pipeline is a fully serverless data processing framework built using AWS se
 
 ---
 
-### 6. Output
+### 7. Output
 #### Final Output
 - Step Functions orchestrate the upload of transformed, SDTM-compliant datasets to the output S3 bucket in multiple formats:
   - CSV
@@ -187,11 +190,11 @@ This pipeline is a fully serverless data processing framework built using AWS se
 
 ---
 
-### 7. Metadata Updates
+### 8. Metadata Updates
 #### Destination Metadata
 - Step Functions trigger an AWS Lambda function to update the metadata repository for the transformed datasets.
 
-### 8. Data Analysis & Validation
+### 9. Data Analysis & Validation
 #### Querying with Athena
 - Amazon Athena is used to perform serverless SQL-based queries on the transformed SDTM datasets.
 - End users (e.g., biostatisticians, statistical programmers etc.,) can validate data integrity, check compliance, and generate reports.
@@ -200,7 +203,6 @@ This pipeline is a fully serverless data processing framework built using AWS se
 
 ## Outcome
 This design concept lays the foundation for automating data processing and compliance workflows in the pharma and medical device industries. It simplifies operations while ensuring high-quality, compliant datasets that meet CDISC standards.
-
 
 ## Step Functions Workflow
 ![diagram](stepfunctions_graph.png)
