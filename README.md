@@ -87,6 +87,7 @@ This pipeline is a fully serverless data processing framework built using AWS se
 When storing clinical datasets in Amazon S3 for use across multiple applications, it’s required to redact sensitive information. For example, before processing patient-reported data, PII should be removed to comply with privacy regulations such as HIPPA and GDPR.
 
 How It Works
+
 `S3 Object Lambda Integration`: When raw data is requested from S3, an S3 Object Lambda function intercepts the request and applies PII redaction before passing the data to the pipeline.
 
 ![diagram](object_lambda.png)
@@ -127,9 +128,7 @@ You can use the prebuilt Lambda function for PII redaction by attaching it to an
 
 ### CI/CD
 - `GitHub Actions`: Implements CI/CD workflows for automated deployment of transformation scripts to AWS ECS.
-
 ---
-
 ## Pipeline Execution Flow
 
 ### 1. Initial Development Stage
@@ -139,14 +138,11 @@ You can use the prebuilt Lambda function for PII redaction by attaching it to an
 
 #### Code Deployment
 - AWS ECS retrieves the latest transformation scripts from GitHub upon deployment.
-
 ---
-
 ### 2. Pipeline Trigger
 #### Raw Data Arrival
 - Raw production data is uploaded to a staging S3 bucket.
 - An **S3 event notification** triggers an **AWS Lambda** function, which initiates **AWS Step Functions** to start the pipeline.
-
 ---
 ### 3. PII Redaction (Pre-Ingestion)
 #### S3 Object Lambda
@@ -165,7 +161,6 @@ You can use the prebuilt Lambda function for PII redaction by attaching it to an
   - Processing stops until issues are resolved.
 - **If checks pass**:
   - The pipeline proceeds to the next stage.
-
 ---
 ### 5. Data Transformation
 #### Processing
@@ -173,9 +168,7 @@ You can use the prebuilt Lambda function for PII redaction by attaching it to an
 
 #### Version Control
 - ECS tasks pull the latest version of scripts from GitHub for processing.
-
 ---
-
 ### 6. Pinnacle21 Compliance Checks
 #### Validation
 - Step Functions trigger AWS ECS to run Pinnacle21 CLI for CDISC compliance checks on the transformed datasets.
@@ -187,18 +180,14 @@ You can use the prebuilt Lambda function for PII redaction by attaching it to an
 - **If checks pass**:
   - Compliance reports and logs are saved in the Audit S3 bucket.
   - The pipeline proceeds to the output stage.
-
 ---
-
 ### 7. Output
 #### Final Output
 - Step Functions orchestrate the upload of transformed, SDTM-compliant datasets to the output S3 bucket in multiple formats:
   - CSV
   - Parquet
   - XPT
-
 ---
-
 ### 8. Metadata Updates
 #### Destination Metadata
 - Step Functions trigger an AWS Lambda function to update the metadata repository for the transformed datasets.
@@ -207,11 +196,9 @@ You can use the prebuilt Lambda function for PII redaction by attaching it to an
 #### Querying with Athena
 - Amazon Athena is used to perform serverless SQL-based queries on the transformed SDTM datasets.
 - End users (e.g., biostatisticians, statistical programmers etc.,) can validate data integrity, check compliance, and generate reports.
-
 ---
+## Step Functions Workflow
+![diagram](stepfunctions_graph.png)
 
 ## Outcome
 This design concept lays the foundation for automating data processing and compliance workflows in the pharma and medical device industries. It simplifies operations while ensuring high-quality, compliant datasets that meet CDISC standards.
-
-## Step Functions Workflow
-![diagram](stepfunctions_graph.png)
