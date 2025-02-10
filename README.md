@@ -1,4 +1,4 @@
-# Automated Serverless SDTM Data Pipeline on AWS
+# Automated SDTM Data Pipeline on AWS - Serverless
 
 ## Overview
 
@@ -79,7 +79,7 @@ This pipeline is a fully serverless data processing framework built using AWS se
 > ⚠ **Note:** Pinnacle21 CLI **only supports Windows and macOS**, making it incompatible with Linux-based environments.  
 
 - To bypass this limitation, a placeholder script has been added to simulate a P21 validation run. This can be replaced with a custom validation solution in the future.  
-- A possible alternative is provisioning a Windows-based VM for validation, but this may introduce unnecessary infrastructure overhead.  
+- Provisioning a Windows-based VM for validation is an alternative, but it undermines the fully serverless architecture by reintroducing infrastructure overhead and management. 
 - A more efficient approach is to run Pinnacle21 on datasets externally from the pipeline.   
 
 ### PII Redaction
