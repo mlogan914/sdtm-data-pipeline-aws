@@ -9,6 +9,7 @@ This project presents a *minimally viable pipeline* for automating SDTM-complian
 
 ## Architecture Diagram
 This pipeline is a fully serverless data processing framework built using AWS services to automate data transformation, integration, and validation for clinical trial data, eliminating infrastructure management while optimizing performance.
+
 ![diagram](architechture.png)
 
 ---
@@ -87,11 +88,11 @@ This pipeline is a fully serverless data processing framework built using AWS se
 - `AWS Glue Centralized metadata repository`- Used to ensure consistent data lineage and visibility across pipeline stages.
 
 ### Error Handling & Data Quality
-`Basic Error Handling`: The pipeline includes basic error handling mechanisms, ensuring that issues are caught and logged for further review. Errors are routed to CloudWatch for easy monitoring, and SNS notifications are triggered to alert the team when critical failures occur. While this approach is simple, it provides a solid foundation for scaling up error management in future iterations.
+- `Basic Error Handling`: The pipeline includes basic error handling mechanisms, ensuring that issues are caught and logged for further review. Errors are routed to CloudWatch for easy monitoring, and SNS notifications are triggered to alert the team when critical failures occur. While this approach is simple, it provides a solid foundation for scaling up error management in future iterations.
 
-`Data Quality Checks`: Supports data validation at ingestion to ensure integrity. This includes duplicate detection, missing value checks, and range validation, guaranteeing that the data meets data quality rules before transformation.  While these checks ensure that data integrity is maintained at a foundational level, the pipeline is designed to be easily customized and expanded for more robust validation checks as needed in the future. This allows for the inclusion of more complex quality controls as the pipeline scales.
+- `Data Quality Checks`: Supports data validation at ingestion to ensure integrity. This includes duplicate detection, missing value checks, and range validation, guaranteeing that the data meets data quality rules before transformation.  While these checks ensure that data integrity is maintained at a foundational level, the pipeline is designed to be easily customized and expanded for more robust validation checks as needed in the future. This allows for the inclusion of more complex quality controls as the pipeline scales.
 
-`Data Anonymization`: The pipeline supports anonymization of sensitive data, ensuring that personally identifiable information (PII) is removed to comply with privacy regulations like HIPAA and GDPR. This helps mitigate risks associated with handling healthcare data and maintains privacy across all stages of processing.
+- `Data Anonymization`: The pipeline supports anonymization of sensitive data, ensuring that personally identifiable information (PII) is removed to comply with privacy regulations like HIPAA and GDPR. This helps mitigate risks associated with handling healthcare data and maintains privacy across all stages of processing.
 
 `Flexible Output Formats`: Processed datasets are available in a variety of output formats including CSV, Parquet, and XPT to ensure compatibility with downstream systems and tools.
 
