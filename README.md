@@ -81,34 +81,33 @@ This pipeline is a fully serverless data processing framework built using AWS se
 
 - To bypass this limitation, a placeholder script has been added to simulate a P21 validation run. This can be replaced with a custom validation solution in the future.  
 - A possible alternative is provisioning a Windows-based VM for validation, but this may introduce unnecessary infrastructure overhead.  
-- A more efficient approach is to run Pinnacle21 on idatasets externally from the pipeline.   
+- A more efficient approach is to run Pinnacle21 on datasets externally from the pipeline.   
 
 ### Metadata Management
 `AWS Glue Centralized Metadata Repository`
 
 1. Centralized Data Catalog
-
-AWS Glue stores metadata in the AWS Glue Data Catalog, which acts as a central repository for:
-- Table and schema definitions (e.g., column names, data types).
-- Locations of raw and transformed datasets (S3 paths).
-- Partition information for optimizing queries in Athena.
+  - AWS Glue stores metadata in the AWS Glue Data Catalog, which acts as a central repository for:
+    - Table and schema definitions (e.g., column names, data types).
+    - Locations of raw and transformed datasets (S3 paths).
+    - Partition information for optimizing queries in Athena.
 
 2. Schema Management
-- Automatically detects schemas from raw clinical data sources.
-- Updates schema information dynamically when new data arrives.
-- Ensures that transformations align with expected SDTM structures.
+  - Automatically detects schemas from raw clinical data sources.
+  - Updates schema information dynamically when new data arrives.
+  - Ensures that transformations align with expected SDTM structures.
 
 3. Data Quality & Validation
-- Helps enforce schema validation by detecting missing or unexpected fields.
-- Enables duplicate detection and record integrity checks before transformation.
+  - Helps enforce schema validation by detecting missing or unexpected fields.
+  - Enables duplicate detection and record integrity checks before transformation.
 
 4. Querying & Analysis (Athena Integration)
-- Once data is cataloged, Amazon Athena can query it directly using SQL, without requiring additional transformations.
-- This allows for quick validation and compliance checks before submission.
+  - Once data is cataloged, Amazon Athena can query it directly using SQL, without requiring additional transformations.
+  - This allows for quick validation and compliance checks before submission.
 
 5. Pipeline Orchestration
-- Glue metadata tables act as intermediary checkpoints for tracking progress between pipeline stages.
-- Downstream processes (e.g., ECS transformations, Pinnacle21 validation) can refer to Glue tables instead of raw files.
+  - Glue metadata tables act as intermediary checkpoints for tracking progress between pipeline stages.
+  - Downstream processes (e.g., ECS transformations, Pinnacle21 validation) can refer to Glue tables instead of raw files.
 
 ### Error Handling & Data Quality
 - `Basic Error Handling`: The pipeline includes basic error handling mechanisms, ensuring that issues are caught and logged for further review. Errors are routed to CloudWatch for easy monitoring, and SNS notifications are triggered to alert the team when critical failures occur. While this approach is simple, it provides a solid foundation for scaling up error management in future iterations.
@@ -150,10 +149,10 @@ AWS Glue stores metadata in the AWS Glue Data Catalog, which acts as a central r
 #### Quality Assurance
 - AWS Glue Data Quality checks are executed on the raw data:
 - **If checks fail**:
-- Notifications are sent via AWS SNS.
-- Processing stops until issues are resolved.
+  - Notifications are sent via AWS SNS.
+  - Processing stops until issues are resolved.
 - **If checks pass**:
-- The pipeline proceeds to the next stage.
+  - The pipeline proceeds to the next stage.
 
 ---
 ### 4. Data Transformation
@@ -171,20 +170,20 @@ AWS Glue stores metadata in the AWS Glue Data Catalog, which acts as a central r
 
 #### Outcome
 - **If checks fail**:
-- Notifications are sent via AWS SNS.
-- Logs and reports are stored in the Audit S3 bucket for review.
+  - Notifications are sent via AWS SNS.
+  - Logs and reports are stored in the Audit S3 bucket for review.
 - **If checks pass**:
-- Compliance reports and logs are saved in the Audit S3 bucket.
-- The pipeline proceeds to the output stage.
+  - Compliance reports and logs are saved in the Audit S3 bucket.
+  - The pipeline proceeds to the output stage.
 
 ---
 
 ### 6. Output
 #### Final Output
 - Step Functions orchestrate the upload of transformed, SDTM-compliant datasets to the output S3 bucket in multiple formats:
-- CSV
-- Parquet
-- XPT
+  - CSV
+  - Parquet
+  - XPT
 
 ---
 
