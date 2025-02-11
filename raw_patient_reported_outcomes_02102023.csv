@@ -1,5 +1,0 @@
-Patient_ID,Name,Email,Age,Gender,Date,Time,Location,Menstrual_Cycle_Symptoms,Medication_Taken,Pain_Score_Morning,Pain_Score_Evening,Mood,Activity_Level,Step_Count
-P001,Jane Doe,jane.doe@email.com,30,Female,2025-02-01,08:30,New York,Heavy Bleeding; Fatigue,NSAID; Birth Control,7,8,Anxious,Low,3500
-P002,Jenna Smith,jenna.smith@email.com,25,Female,2025-02-01,09:00,Los Angeles,No Symptoms,NSAID,3,4,Normal,Moderate,5000
-P003,Alice Johnson,alice.johnson@email.com,32,Female,2025-02-01,10:00,Chicago,Heavy Bleeding; Cramping; Fatigue,NSAID,9,9,Sad,Very Low,1000
-P004,Rabecca White,rabecca.white@email.com,40,Female,2025-02-01,10:30,Miami,No Symptoms,No Medication,2,2,Happy,High,8000
