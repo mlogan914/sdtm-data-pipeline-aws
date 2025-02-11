@@ -17,7 +17,7 @@ The VEXIN-03 clinical trial aims to evaluate the efficacy and safety of Pelvinex
 1.	**Data Integration**: The project should integrate disparate datasets from the clinical trial into a unified pipeline. 
 2.	**De-identification**: The Patient Reported Outcomes (PRO) data includes sensitive personal information that must be de-identified to comply with privacy regulations, such as HIPAA. This de-identification process must ensure that all personally identifiable information (PII), including patient names, birthdates, and other unique identifiers, is removed while preserving the integrity of the study for analysis.
 3.	**Data Transformation and Validation**: Once de-identified, the patient data will be transformed to ensure consistency across all sites and time points. This transformation is necessary for creating final tabulation SDTM datasets, which will be used for downstream clinical analysis.
-4.	**Data Aggregation**: The trial data will be aggregated by study arm, patient demographics, and PROs to assess the treatment’s impact on patient outcomes. This data aggregation will require merging datasets with different structures for consistency, and ensuring alignment of treatment arms and other relevant variables.
+4.	**Data Aggregation**: Data Aggregation: The trial data will need further transformation by statistical programmers and statisticians to generate ad hoc reports. As a result, end users must have easy access to query the data directly.
 5.	**Data Pipeline Automation**: The data pipeline should be designed to handle data updates from multiple sites and automate the steps of data collection, de-identification, transformation, and aggregation.
 
 ---
