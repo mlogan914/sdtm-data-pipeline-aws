@@ -44,8 +44,8 @@ The VEXIN-03 clinical trial is designed to assess the efficacy and safety of Pel
   
 **Requirements:**
 1.	**Data Integration**: The project should integrate disparate datasets from the clinical trial into a unified pipeline. 
-2.	**De-identification**: The Patient Reported Outcomes (PRO) data includes sensitive personal information that must be de-identified to comply with privacy regulations, such as HIPAA. This de-identification process must ensure that all personally identifiable information (PII), including patient names, birthdates, and other unique identifiers, is removed while preserving the integrity of the study for analysis.
-3.	**Data Transformation and Validation**: Once de-identified, patient data will be transformed to maintain consistency across study sites and time points, enabling the creation of final SDTM datasets for downstream clinical analysis.
+2.	**De-identification**: Wearable device data will not be integrated into SDTM tables but will be provided directly to various end users. To ensure privacy, the data will be need to be masked for PII and remain in its raw form, allowing for in-place querying. Different users may require varying levels of access to different portions of the data.
+3.	**Data Transformation and Validation**: Site-collected patient data will be standardized across study sites and time points, enabling the creation of SDTM datasets for clinical analysis.
 4.	**Data Aggregation**: The trial data will need further transformation by statistical programmers and statisticians to generate ad hoc reports. As a result, end users must have easy access to query the data directly.
 5.	**Data Pipeline Automation**: The data pipeline should be designed to handle data updates from multiple sites and automate the steps of data collection, de-identification, transformation, and aggregation.
 
