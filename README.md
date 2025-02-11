@@ -223,12 +223,12 @@ You can use the prebuilt Lambda function for PII redaction by attaching it to an
 ### 7. Metadata Updates
 #### Destination Metadata
 - Step Functions trigger an AWS Lambda function to update the metadata repository for the transformed datasets.
-
+---
 ### 8. Data Analysis & Validation
 #### Querying with Athena
 - Amazon Athena is used to perform serverless SQL-based queries on the transformed SDTM datasets.
 - End users (e.g., biostatisticians, statistical programmers etc.,) can validate data integrity, check compliance, and generate reports.
-
+---
 ### 9. Data Access & PII Redaction (External to Step Functions Workflow)
 #### S3 Object Lambda
 - Wearable application data is ingested into an S3 bucket via custom scripts.
