@@ -172,74 +172,74 @@ You can use the prebuilt Lambda function for PII redaction by attaching it to an
 
 ## Pipeline Execution Flow
 
-> ### **1. Initial Development Stage**
-> - **Development Workflow:**  
->   - Developers use **UAT data** to create and version transformation scripts in **GitHub**.  
->   - **CI/CD pipelines** deploy updates to **AWS ECS**.
-> - **Code Deployment:**  
->   - **AWS ECS** retrieves the latest transformation scripts from **GitHub**.
+ ### **1. Initial Development Stage**
+ - **Development Workflow:**  
+   - Developers use **UAT data** to create and version transformation scripts in **GitHub**.  
+   - **CI/CD pipelines** deploy updates to **AWS ECS**.
+ - **Code Deployment:**  
+   - **AWS ECS** retrieves the latest transformation scripts from **GitHub**.
 
 ---
 
-> ### **2. Pipeline Trigger**
-> - **Raw Data Arrival:**  
->   - Raw production data is uploaded to **S3**.  
->   - **S3 event** triggers **AWS Lambda** to start **AWS Step Functions**.
+ ### **2. Pipeline Trigger**
+ - **Raw Data Arrival:**  
+   - Raw production data is uploaded to **S3**.  
+   - **S3 event** triggers **AWS Lambda** to start **AWS Step Functions**.
 
 ---
 
-> ### **3. PII Redaction (Pre-Ingestion)**
-> - **S3 Object Lambda:**  
->   - Filters and redacts PII from data using **S3 Object Lambda**.  
->   - Redacted data is stored in a **cleaned S3 bucket**.
+ ### **3. PII Redaction (Pre-Ingestion)**
+ - **S3 Object Lambda:**  
+   - Filters and redacts PII from data using **S3 Object Lambda**.  
+   - Redacted data is stored in a **cleaned S3 bucket**.
 
 ---
 
-> ### **4. Data Quality Checks**
-> - **AWS Glue Crawler:**  
->   - Triggers **AWS Glue** to update metadata repository.
-> - **Quality Assurance:**  
->   - **AWS Glue Data Quality Job**:  
->     - **If checks pass:** Pipeline proceeds.  
->     - **If checks fail:** Notifications via **AWS SNS**, and processing stops until resolved.
+ ### **4. Data Quality Checks**
+ - **AWS Glue Crawler:**  
+   - Triggers **AWS Glue** to update metadata repository.
+ - **Quality Assurance:**  
+   - **AWS Glue Data Quality Job**:  
+     - **If checks pass:** Pipeline proceeds.  
+     - **If checks fail:** Notifications via **AWS SNS**, and processing stops until resolved.
 
 ---
 
-> ### **5. Data Transformation**
-> - **Processing:**  
->   - **AWS ECS** runs transformation scripts triggered by **AWS Step Functions**.
-> - **Version Control:**  
->   - **ECS** pulls the latest scripts from **GitHub**.
+ ### **5. Data Transformation**
+ - **Processing:**  
+   - **AWS ECS** runs transformation scripts triggered by **AWS Step Functions**.
+ - **Version Control:**  
+   - **ECS** pulls the latest scripts from **GitHub**.
 
 ---
 
-> ### **6. Pinnacle21 Compliance Checks**
-> - **Validation:**  
->   - **AWS ECS** runs **Pinnacle21 CLI** for CDISC compliance checks.
-> - **Outcome:**  
->     - **If checks pass:** Logs are saved in **Audit S3** and pipeline proceeds.  
->     - **If checks fail:** Notifications via **SNS**, logs stored in **Audit S3**.
+ ### **6. Pinnacle21 Compliance Checks**
+ - **Validation:**  
+   - **AWS ECS** runs **Pinnacle21 CLI** for CDISC compliance checks.
+ - **Outcome:**  
+     - **If checks pass:** Logs are saved in **Audit S3** and pipeline proceeds.  
+     - **If checks fail:** Notifications via **SNS**, logs stored in **Audit S3**.
 
 ---
 
-> ### **7. Output**
-> - **Final Output:**  
->   - **AWS Step Functions** upload transformed datasets to **S3** in formats:  
->     - CSV  
->     - Parquet  
->     - XPT
+ ### **7. Output**
+ - **Final Output:**  
+   - **AWS Step Functions** upload transformed datasets to **S3** in formats:  
+     - CSV  
+     - Parquet  
+     - XPT
 
 ---
 
-> ### **8. Metadata Updates**
-> - **Update Metadata Repository:**  
->   - **AWS Lambda** updates metadata for transformed datasets.
+ ### **8. Metadata Updates**
+ - **Update Metadata Repository:**  
+   - **AWS Lambda** updates metadata for transformed datasets.
 
 ---
 
-> ### **9. Data Analysis & Validation**
-> - **Amazon Athena:**  
->   - End users can query SDTM datasets for data integrity, compliance, and reporting.
+ ### **9. Data Analysis & Validation**
+ - **Amazon Athena:**  
+   - End users can query SDTM datasets for data integrity, compliance, and reporting.
 
 ---
 
