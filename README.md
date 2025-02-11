@@ -244,3 +244,4 @@ You can use the prebuilt Lambda function for PII redaction by attaching it to an
 
 ## Outcome
 This design concept lays the foundation for automating data processing and compliance workflows in the pharma and medical device industries. It simplifies operations while ensuring high-quality, compliant datasets that meet CDISC standards.
+
