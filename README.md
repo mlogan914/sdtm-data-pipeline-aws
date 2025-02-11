@@ -7,7 +7,7 @@ This project presents a minimally viable concept pipeline that automates SDTM-co
 
 ---
 
-## Business Scenario: Clinical Trial Data Pipeline for VEXIN Study
+## Business Scenario:
 
 ### Evaluation of Pelvinexinol in Endometriosis (VEXIN-03) - Phase II Clinical Trial
 **Objective:**
@@ -43,14 +43,12 @@ The VEXIN-03 clinical trial is designed to assess the efficacy and safety of Pel
   - **GPS coordinates**
   
 **Requirements:**
-1.	**Data Integration**: The project should integrate disparate datasets from the clinical trial into a unified pipeline. 
-2.	**De-identification**: Wearable device data will not be integrated into SDTM tables but will be provided directly to various end users. To ensure privacy, the data will need to be masked for PII and remain in its raw form, allowing for in-place querying. Different users may require varying levels of access to different portions of the data, so granular access control is required.
-3.	**Data Transformation and Validation**: Site-collected patient data will be standardized across study sites and time points, enabling the creation of SDTM datasets for clinical analysis.
-4.	**Data Aggregation**: The trial data will need further transformation by statistical programmers and statisticians to generate ad hoc reports. As a result, end users must have easy access to query the data directly.
-5.	**Data Pipeline Automation**: The data pipeline should be designed to handle data updates from multiple sites and automate the steps of data collection, de-identification, transformation, and aggregation.
-
+1. **Data Ingestion & Integration** – The project should integrate disparate datasets from the clinical trial into a unified pipeline.
+2. **Privacy & De-identification** – Wearable device data will not be integrated into SDTM tables but will be provided directly to various end users. To ensure privacy, the data must be masked for PII while remaining in its raw form for in-place querying. Granular access control is required since different users may need access to different portions of the data.
+3. **Standardization & Validation** – Site-collected patient data will be standardized across study sites and time points to enable the creation of SDTM datasets for clinical analysis.
+4. **Data Access & Aggregation** – Trial data will undergo further transformation by statistical programmers and statisticians to generate ad hoc reports. End users must have easy access to query the data directly.
+5. **Automated Data Processing** – The data pipeline should handle updates from multiple sites and automate the steps of data collection, de-identification, transformation, and aggregation.
 ---
-
 ## Architecture Diagram
 This pipeline is a fully serverless data processing framework built using AWS services to automate data transformation, integration, and validation of data, eliminating infrastructure management while optimizing performance.
 
@@ -244,5 +242,3 @@ You can use the prebuilt Lambda function for PII redaction by attaching it to an
 
 ## Outcome
 This design concept lays the foundation for automating data processing and compliance workflows in the pharma and medical device industries. It simplifies operations while ensuring high-quality, compliant datasets that meet CDISC standards.
-
-
