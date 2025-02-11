@@ -157,8 +157,8 @@ You can use the prebuilt Lambda function for PII redaction by attaching it to an
 >   - Triggers **AWS Glue** to update metadata repository.
 > - **Quality Assurance:**  
 >   - **AWS Glue Data Quality Job**:  
->     - ✅ **If checks pass:** Pipeline proceeds.  
->     - ❌ **If checks fail:** Notifications via **AWS SNS**, and processing stops until resolved.
+>     - **If checks pass:** Pipeline proceeds.  
+>     - **If checks fail:** Notifications via **AWS SNS**, and processing stops until resolved.
 
 ---
 
@@ -174,8 +174,8 @@ You can use the prebuilt Lambda function for PII redaction by attaching it to an
 > - **Validation:**  
 >   - **AWS ECS** runs **Pinnacle21 CLI** for CDISC compliance checks.
 > - **Outcome:**  
->     - ✅ **If checks pass:** Logs are saved in **Audit S3** and pipeline proceeds.  
->     - ❌ **If checks fail:** Notifications via **SNS**, logs stored in **Audit S3**.
+>     - **If checks pass:** Logs are saved in **Audit S3** and pipeline proceeds.  
+>     - **If checks fail:** Notifications via **SNS**, logs stored in **Audit S3**.
 
 ---
 
