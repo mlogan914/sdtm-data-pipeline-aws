@@ -1,5 +1,0 @@
-Patient_ID,Device_ID,Date,Time,Resting_Heart_Rate,Step_Count,Activity_Level,Location,Duration_Of_Sleep,Sleep_Disturbances
-P001,Fitbit123,2025-02-01,08:00,72,3500,Low,New York,6,Frequent Waking
-P002,AppleHealth456,2025-02-01,09:00,65,5000,Moderate,Los Angeles,7,No Waking
-P003,OuraRing789,2025-02-01,10:00,80,1000,Very Low,Chicago,5,Frequent Waking
-P004,Fitbit321,2025-02-01,10:30,70,8000,High,Miami,8,No Waking
