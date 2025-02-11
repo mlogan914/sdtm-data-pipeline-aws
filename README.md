@@ -9,7 +9,7 @@ This project presents a minimally viable pipeline for automating SDTM-compliant 
 
 ## Business Scenario: Clinical Trial Data Pipeline for VEXIN Study
 
-### Project Title: Evaluation of Pelvinexinol in Endometriosis (VEXIN-03) - Phase II Clinical Trial
+### Evaluation of Pelvinexinol in Endometriosis (VEXIN-03) - Phase II Clinical Trial
 **Objective:**
 The VEXIN-03 clinical trial aims to evaluate the efficacy and safety of Pelvinexinol, a pain medication, for women suffering from endometriosis. This study involves a diverse patient population and measures the medication's impact on pain relief through Patient Reported Outcomes (PRO) data. The trial is conducted at multiple sites across the United States, including patients with varying ages, ethnic backgrounds, and prior medical histories.
 
