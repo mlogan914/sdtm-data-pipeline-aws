@@ -63,6 +63,7 @@ resource "aws_s3_bucket_notification" "landing_bucket_notification" {
     aws_lambda_permission.allow_s3_invocation # Ensure permission is applied before the notification
   ]
 }
+
 # ----------------------------------------
 # Scripts Bucket
 # ----------------------------------------
@@ -202,4 +203,13 @@ resource "aws_s3_bucket_policy" "output-bucket-policy" {
       }
     ]
   })
+}
+
+# ----------------------------------------
+# Output Bucket
+# ----------------------------------------
+resource "aws_s3_bucket" "appdata-bucket" {
+  bucket = var.appdata_bucket_name
+
+  tags = var.tags
 }

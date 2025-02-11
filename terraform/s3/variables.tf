@@ -29,6 +29,11 @@ variable "audit_bucket_name" {
    description = "The name of the S3 bucket for output"
  }
 
+  variable "appdata_bucket_name" {
+   type        = string
+   description = "The name of the S3 bucket for app data"
+ }
+
 variable "tags" {
   type        = map(string)
   description = "Tags for the resources"

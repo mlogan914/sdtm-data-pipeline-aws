@@ -124,7 +124,7 @@ This pipeline is a fully serverless data processing framework built using AWS se
 - A more efficient approach is to run Pinnacle21 on datasets externally from the pipeline.   
 
 ### PII Redaction
-When storing clinical datasets in Amazon S3 for use across multiple applications, it’s required to redact sensitive information. For example, before processing patient-reported data, PII should be removed to comply with privacy regulations such as HIPPA and GDPR.
+When storing clinical datasets in Amazon S3 for use across multiple applications, it’s required to redact sensitive information.
 
 How It Works
 
@@ -132,7 +132,7 @@ How It Works
 
 ![diagram](object_lambda.png)
 
-You can use the prebuilt Lambda function for PII redaction by attaching it to an S3 Object Lambda Access Point. When an application makes a standard S3 GET request, the access point triggers the Lambda function to detect and redact PII from the data. The redacted data is then returned to the application.
+You can use the prebuilt Lambda function for PII redaction by attaching it to an S3 Object Lambda Access Point. When an application makes a standard S3 GET request, the access point triggers the Lambda function to detect and redact PII from the data. The redacted data is then returned to the application/requester.
 
 ### Metadata Management
 **Centralized Data Catalog**
@@ -182,13 +182,7 @@ You can use the prebuilt Lambda function for PII redaction by attaching it to an
 - Raw production data is uploaded to a staging S3 bucket.
 - An **S3 event notification** triggers an **AWS Lambda** function, which initiates **AWS Step Functions** to start the pipeline.
 ---
-### 3. PII Redaction (Pre-Ingestion)
-#### S3 Object Lambda
-- S3 Object Lambda is invoked to filter and redact PII from patient-reported data before ingestion.
-- The redacted data is then stored in a cleaned S3 bucket.
-- Once processed, the pipeline proceeds to the next stage.
----
-### 4. Data Quality Checks
+### 3. Data Quality Checks
 #### AWS Glue Crawler
 - Step Functions trigger an AWS Glue Crawler to crawl raw data and update the centralized metadata repository.
 
@@ -200,14 +194,14 @@ You can use the prebuilt Lambda function for PII redaction by attaching it to an
 - **If checks pass**:
   - The pipeline proceeds to the next stage.
 ---
-### 5. Data Transformation
+### 4. Data Transformation
 #### Processing
 - Step Functions trigger AWS ECS to execute transformation scripts on the raw data using custom code.
 
 #### Version Control
 - ECS tasks pull the latest version of scripts from GitHub for processing.
 ---
-### 6. Pinnacle21 Compliance Checks
+### 5. Pinnacle21 Compliance Checks
 #### Validation
 - Step Functions trigger AWS ECS to run Pinnacle21 CLI for CDISC compliance checks on the transformed datasets.
 
@@ -219,22 +213,29 @@ You can use the prebuilt Lambda function for PII redaction by attaching it to an
   - Compliance reports and logs are saved in the Audit S3 bucket.
   - The pipeline proceeds to the output stage.
 ---
-### 7. Output
+### 6. Output
 #### Final Output
 - Step Functions orchestrate the upload of transformed, SDTM-compliant datasets to the output S3 bucket in multiple formats:
   - CSV
   - Parquet
   - XPT
 ---
-### 8. Metadata Updates
+### 7. Metadata Updates
 #### Destination Metadata
 - Step Functions trigger an AWS Lambda function to update the metadata repository for the transformed datasets.
 
-### 9. Data Analysis & Validation
+### 8. Data Analysis & Validation
 #### Querying with Athena
 - Amazon Athena is used to perform serverless SQL-based queries on the transformed SDTM datasets.
 - End users (e.g., biostatisticians, statistical programmers etc.,) can validate data integrity, check compliance, and generate reports.
+
+### 9. Data Access & PII Redaction (External to Step Functions Workflow)
+#### S3 Object Lambda
+- Wearable application data is ingested into an S3 bucket via custom scripts.
+- When a requester accesses the data, S3 Object Lambda is invoked to dynamically filter and redact PII from patient-reported data.
+
 ---
+
 ## Step Functions Workflow
 ![diagram](stepfunctions_graph.png)
 
