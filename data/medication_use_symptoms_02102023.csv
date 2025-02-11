@@ -1,0 +1,5 @@
+Patient_ID,Name,Email,Date,Time,Medications,Symptom_Score,Pain_Level,Symptoms,Location
+P001,Jane Doe,jane.doe@email.com,2025-02-01,08:30,NSAID,3,7,Cramping; Fatigue,New York
+P002,Jenna Smith,jenna.smith@email.com,2025-02-01,09:00,NSAID,2,3,No Symptoms,Los Angeles
+P003,Alice Johnson,alice.johnson@email.com,2025-02-01,10:00,NSAID,4,9,Heavy Bleeding; Fatigue,Chicago
+P004,Rabecca White,rabecca.white@email.com,2025-02-01,10:30,No Medication,1,2,Happy,Miami
