@@ -1,9 +1,10 @@
 # Automated SDTM Data Pipeline on AWS - Serverless
 
 ## Overview
-SDTM (Study Data Tabulation Model) is a standardized format for organizing human clinical trial data. Developed by CDISC (Clinical Data Interchange Standards Consortium), it's used to structure and submit trial data to regulatory agencies like the FDA (Food & Drug Administration) and PMDA (Pharmaceuticals and Medical Devices Agency). SDTM improves consistency, traceability, and interoperability across studies.
 
 This project presents a minimally viable concept pipeline that automates SDTM-compliant data transformation in clinical trial industries. It is designed to ingest raw clinical data from various sources, including Electronic Data Capture (EDC), labs, wearables, manual uploads, and APIs, converting it into CDISC SDTM datasets.
+
+> **Context:** SDTM (Study Data Tabulation Model) is a standardized format for organizing human clinical trial data. Developed by CDISC (Clinical Data Interchange Standards Consortium), it's used to structure and submit trial data to regulatory agencies like the FDA (Food & Drug Administration) and PMDA (Pharmaceuticals and Medical Devices Agency). SDTM improves consistency, traceability, and interoperability across studies.
 
 ---
 
@@ -15,27 +16,27 @@ The VEXIN-03 clinical trial is designed to assess the efficacy and safety of Pel
 
 ### External Application Data Sources  
 
-#### 1. Patient-Reported Outcomes (PROs) from External Health Apps (Clue, Flo, MyPainDiary)
-##### **Types of Data Collected**
+### 1. Patient-Reported Outcomes (PROs) from External Health Apps (Clue, Flo, MyPainDiary)
+#### **Types of Data Collected**
 - **Daily pain scores** (1-10 scale, different body areas)  
 - **Menstrual cycle tracking** (flow, symptoms, duration)  
 - **Mood and fatigue levels**  
 - **Medication intake** (NSAIDs, hormonal treatments)  
 
-##### **Privacy Considerations**
+#### **Privacy Considerations**
 - Personally Identifiable Information (PII) risks include:  
   - **Names**  
   - **Emails**  
   - **Timestamps**  
   - **Location data** (if GPS tracking is enabled)  
 
-#### 2. Wearable Device Data (Fitbit, Apple Health, Oura Ring)  
-##### **Types of Data Collected**
+### 2. Wearable Device Data (Fitbit, Apple Health, Oura Ring)  
+#### **Types of Data Collected**
 - **Resting heart rate** (increases during pain episodes)  
 - **Sleep disturbances** (insomnia, frequent awakenings)  
 - **Step count & activity levels** (reduced during flare-ups)  
 
-##### **Privacy Considerations**
+#### **Privacy Considerations**
 - Personally Identifiable Information (PII) risks include: 
   - **Device ID**  
   - **User profiles**  
@@ -43,7 +44,7 @@ The VEXIN-03 clinical trial is designed to assess the efficacy and safety of Pel
   - **GPS coordinates**
   
 **Requirements:**
-1. **Data Ingestion & Integration** – The project should integrate disparate datasets from the clinical trial into a unified pipeline.
+1. **Data Ingestion & Integration** The project should integrate disparate datasets from the clinical trial into a unified pipeline.
 2. **Privacy & De-identification** – Wearable device data will not be integrated into SDTM tables but will be provided directly to various end users. To ensure privacy, the data must be masked for PII while remaining in its raw form for in-place querying. Granular access control is required since different users may need access to different portions of the data.
 3. **Standardization & Validation** – Site-collected patient data will be standardized across study sites and time points to enable the creation of SDTM datasets for clinical analysis.
 4. **Data Access & Aggregation** – Trial data will undergo further transformation by statistical programmers and statisticians to generate ad hoc reports. End users must have easy access to query the data directly.
@@ -57,17 +58,17 @@ This pipeline is a fully serverless data processing framework built using AWS se
 ## Key Features
 
 ### Serverless AWS-Based Architecture
-- `S3 Object Lambda` – Filters and redacts PII from patient-reported outcomes before ingestion.
-- `S3` – Stores raw, staged, final SDTM datasets, complicance reports, and logs.
-- `Step Functions` – Orchestrates ingestion & processing, validation, and transformation workflows.
-- `Glue` – Manages metadata, enforces data quality checks, and updates centralized metadata repositories.
-- `ECS (Fargate)` – Runs SDTM transformation and validation scripts.
-- `Lambda` – Handles event-driven workflows, metadata updates, and auxiliary tasks.
-- `CloudWatch` – Provides real-time monitoring, logging, and alerts to track pipeline performance.
-- `Athena` – Enables serverless SQL-based querying for end users.
+- **S3 Object Lambda** – Filters and redacts PII from patient-reported outcomes before ingestion.
+- **S3** – Stores raw, staged, final SDTM datasets, complicance reports, and logs.
+- **Step Functions** – Orchestrates ingestion & processing, validation, and transformation workflows.
+- **Glue** – Manages metadata, enforces data quality checks, and updates centralized metadata repositories.
+- **ECS (Fargate)** – Runs SDTM transformation and validation scripts.
+- **Lambda** – Handles event-driven workflows, metadata updates, and auxiliary tasks.
+- **CloudWatch** – Provides real-time monitoring, logging, and alerts to track pipeline performance.
+- **Athena** – Enables serverless SQL-based querying for end users.
 
 ### Infrastructure as Code (IaC)
-- `Terraform`: Used for provisioning scalable, reusable, and automated pipeline infrastructure.
+- Terraform – Used for provisioning scalable, reusable, and automated pipeline infrastructure.
 
 #### Directory Structure
 ```
@@ -113,22 +114,20 @@ This pipeline is a fully serverless data processing framework built using AWS se
         └── outputs.tf              # VPC outputs
 ```
 ### Compliance Validation  
-- `Pinnacle21 (formerly OpenCDISC)` is a widely used validation tool in the clinical research industry, providing automated SDTM compliance verification. 
-- `Pinnacle21 CLI` is integrated for CDISC compliance checks, to ensue SDTM datasets meet regulatory standards for submission.  
+- Pinnacle21 (previously known as OpenCDISC) – is a widely used validation tool in the clinical research that provides automated SDTM compliance verification. 
+- Pinnacle21 CLI – is integrated for CDISC compliance checks, to ensue SDTM datasets meet regulatory standards for submission.  
 
 #### Platform Limitations & Workarounds  
-> ⚠ **Note:** Pinnacle21 CLI **only supports Windows and macOS**, making it incompatible with Linux-based environments.  
+> ⚠ **Note:** Pinnacle21 CLI **only supports Windows and macOS**, making it incompatible with Linux-based environments. Provisioning a Windows-based VM for validation is an alternative, but it undermines the fully serverless architecture design. A more efficient approach is to run Pinnacle21 on datasets externally from the pipeline.
 
-- To bypass this limitation, a placeholder script has been added to simulate a P21 validation run. This can be replaced with a custom validation solution in the future.  
-- Provisioning a Windows-based VM for validation is an alternative, but it undermines the fully serverless architecture by reintroducing infrastructure overhead and management. 
-- A more efficient approach is to run Pinnacle21 on datasets externally from the pipeline.   
+To bypass this limitation, a placeholder script has been added to simulate a P21 validation run. This can be replaced with a custom validation solution in the future.  
 
 ### PII Redaction
 When storing clinical datasets in Amazon S3 for use across multiple applications, it’s required to redact sensitive information.
 
 How It Works
 
-`S3 Object Lambda Integration`: When raw data is requested from S3, an S3 Object Lambda function intercepts the request and applies PII redaction before passing the data to the pipeline.
+S3 Object Lambda Integration – When raw data is requested from S3, an S3 Object Lambda function intercepts the request and applies PII redaction exposing data to the requestor.
 
 ![diagram](object_lambda.png)
 
@@ -136,37 +135,18 @@ You can use the prebuilt Lambda function for PII redaction by attaching it to an
 
 ### Metadata Management
 **Centralized Data Catalog**
-- AWS Glue stores metadata in the AWS Glue Data Catalog, which acts as a central repository for:
-- Table and schema definitions (e.g., column names, data types).
-- Locations of raw and transformed datasets (S3 paths).
-- Partition information for optimizing queries in Athena.
 
-**Schema Management**
-- Automatically detects schemas from raw clinical data sources.
-- Updates schema information dynamically when new data arrives.
-- Ensures that transformations align with expected SDTM structures.
-
-**Data Quality & Validation**
-- Helps enforce schema validation by detecting missing or unexpected fields.
-- Enables duplicate detection and record integrity checks before transformation.
-
-**Athena Integration**
-- Once data is cataloged, Amazon Athena can query it directly using SQL, without requiring additional transformations.
-- This allows for quick validation and compliance checks before submission.
-
-**Pipeline Orchestration**
-- Glue metadata tables act as intermediary checkpoints for tracking progress between pipeline stages.
-- Downstream processes (e.g., ECS transformations, Pinnacle21 validation) can refer to Glue tables instead of raw files.
+AWS Glue serves as a centralized metadata store, maintaining table schemas, dataset locations, and partitions for optimized queries. It detects and updates schemas dynamically to align with SDTM structures while enforcing schema integrity through validation checks. Glue metadata tables act as checkpoints for tracking pipeline progress and guiding downstream processes. Cataloged data is also queryable in Athena enabling quick validation.
 
 ### Error Handling & Data Quality
-
-- `Error Handling`: Logs issues in CloudWatch and triggers SNS notifications for critical failures. Provides a foundation for scaling error management. 
-- `Data Quality Checks`: Supports duplicate detection, missing value checks, and range validation at ingestion, with flexibility for customization and expansion.
-- Output Formats: Supports CSV, Parquet, and XPT for broad compatibility.
+Errors are logged in CloudWatch, with SNS alerts for critical failures. Data quality checks might include duplicate detection, missing value validation, and range checks, with customization options. Outputs support CSV, Parquet, and XPT for compatibility.
 
 ### CI/CD
-- `GitHub Actions`: Implements CI/CD workflows for automated deployment of transformation scripts to AWS ECS.
+
+GitHub Actions automates deployment of transformation scripts to AWS ECS, enabling continuous integration and delivery.
+
 ---
+
 ## Pipeline Execution Flow
 
 ### 1. Initial Development Stage
