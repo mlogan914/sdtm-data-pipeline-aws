@@ -126,69 +126,79 @@ You can use the prebuilt Lambda function for PII redaction by attaching it to an
 ### CI/CD
 - `GitHub Actions`: Implements CI/CD workflows for automated deployment of transformation scripts to AWS ECS.
 ---
+
 ## Pipeline Execution Flow
 
-### **1. Initial Development Stage**
-> #### Development Workflow
-> - Developers use UAT data to create and version base transformation scripts in GitHub.
-> - CI/CD pipelines ensure code updates are deployed to AWS ECS.
->#### Code Deployment
-> - AWS ECS retrieves the latest transformation scripts from GitHub upon deployment.
+> ### **1. Initial Development Stage**
+> - **Development Workflow:**  
+>   - Developers use **UAT data** to create and version transformation scripts in **GitHub**.  
+>   - **CI/CD pipelines** deploy updates to **AWS ECS**.
+> - **Code Deployment:**  
+>   - **AWS ECS** retrieves the latest transformation scripts from **GitHub**.
+
 ---
-### **2. Pipeline Trigger**
-> #### Raw Data Arrival
-> - Raw production data is uploaded to a staging S3 bucket.
-> - An **S3 event notification** triggers an **AWS Lambda** function, which initiates **AWS Step Functions** to start the pipeline.
+
+> ### **2. Pipeline Trigger**
+> - **Raw Data Arrival:**  
+>   - Raw production data is uploaded to **S3**.  
+>   - **S3 event** triggers **AWS Lambda** to start **AWS Step Functions**.
+
 ---
-### **3. PII Redaction (Pre-Ingestion)**
-> #### S3 Object Lambda
-> - S3 Object Lambda is invoked to filter and redact PII from patient-reported data before ingestion.
-> - The redacted data is then stored in a cleaned S3 bucket.
-> - Once processed, the pipeline proceeds to the next stage.
+
+> ### **3. PII Redaction (Pre-Ingestion)**
+> - **S3 Object Lambda:**  
+>   - Filters and redacts PII from data using **S3 Object Lambda**.  
+>   - Redacted data is stored in a **cleaned S3 bucket**.
+
 ---
-### **4. Data Quality Checks**
-> #### AWS Glue Crawler
-> - Step Functions trigger an AWS Glue Crawler to crawl raw data and update the centralized metadata repository.
-> #### Quality Assurance
-> - AWS Glue Data Quality checks are executed on the raw data:
-> - **If checks fail**:
->   - Notifications are sent via AWS SNS.
->   - Processing stops until issues are resolved.
-> - **If checks pass**:
->   - The pipeline proceeds to the next stage.
+
+> ### **4. Data Quality Checks**
+> - **AWS Glue Crawler:**  
+>   - Triggers **AWS Glue** to update metadata repository.
+> - **Quality Assurance:**  
+>   - **AWS Glue Data Quality Job**:  
+>     - ✅ **If checks pass:** Pipeline proceeds.  
+>     - ❌ **If checks fail:** Notifications via **AWS SNS**, and processing stops until resolved.
+
 ---
-### **5. Data Transformation**
-> #### Processing
-> - Step Functions trigger AWS ECS to execute transformation scripts on the raw data using custom code.
-> #### Version Control
-> - ECS tasks pull the latest version of scripts from GitHub for processing.
+
+> ### **5. Data Transformation**
+> - **Processing:**  
+>   - **AWS ECS** runs transformation scripts triggered by **AWS Step Functions**.
+> - **Version Control:**  
+>   - **ECS** pulls the latest scripts from **GitHub**.
+
 ---
-### **6. Pinnacle21 Compliance Checks**
-> #### Validation
-> - Step Functions trigger AWS ECS to run Pinnacle21 CLI for CDISC compliance checks on the transformed datasets.
-> #### Outcome
-> - **If checks fail**:
->   - Notifications are sent via AWS SNS.
->   - Logs and reports are stored in the Audit S3 bucket for review.
-> - **If checks pass**:
->   - Compliance reports and logs are saved in the Audit S3 bucket.
->   - The pipeline proceeds to the output stage.
+
+> ### **6. Pinnacle21 Compliance Checks**
+> - **Validation:**  
+>   - **AWS ECS** runs **Pinnacle21 CLI** for CDISC compliance checks.
+> - **Outcome:**  
+>     - ✅ **If checks pass:** Logs are saved in **Audit S3** and pipeline proceeds.  
+>     - ❌ **If checks fail:** Notifications via **SNS**, logs stored in **Audit S3**.
+
 ---
-### **7. Output**
-> #### Final Output
-> - Step Functions orchestrate the upload of transformed, SDTM-compliant datasets to the output S3 bucket in multiple formats:
->   - CSV
->   - Parquet
->   - XPT
+
+> ### **7. Output**
+> - **Final Output:**  
+>   - **AWS Step Functions** upload transformed datasets to **S3** in formats:  
+>     - CSV  
+>     - Parquet  
+>     - XPT
+
 ---
-### **8. Metadata Updates**
-> #### Destination Metadata
-> - Step Functions trigger an AWS Lambda function to update the metadata repository for the transformed datasets.
+
+> ### **8. Metadata Updates**
+> - **Update Metadata Repository:**  
+>   - **AWS Lambda** updates metadata for transformed datasets.
+
 ---
-### **9. Data Analysis & Validation**
-> #### Querying with Athena
-> - Amazon Athena is used to perform serverless SQL-based queries on the transformed SDTM datasets.
-> - End users (e.g., biostatisticians, statistical programmers etc.,) can validate data integrity, check compliance, and generate reports.
+
+> ### **9. Data Analysis & Validation**
+> - **Amazon Athena:**  
+>   - End users can query SDTM datasets for data integrity, compliance, and reporting.
+
+---
 
 ## Step Functions Workflow
 ![diagram](stepfunctions_graph.png)
