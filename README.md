@@ -1,7 +1,7 @@
 # Automated SDTM Data Pipeline on AWS - Serverless
 
 ## Overview
-SDTM (Study Data Tabulation Model) is a standardized structure for human clinical trial data tabulations developed by CDISC (Clinical Data Interchange Standards Consortium) for organizing and submitting clinical trial data to regulatory agencies such as the FDA and PMDA. It enhances consistency, traceability, and interoperability across studies.
+SDTM (Study Data Tabulation Model) is a standardized structure for human clinical trial data tabulations developed by CDISC (Clinical Data Interchange Standards Consortium) for organizing and submitting clinical trial data to regulatory agencies such as the FDA (Food & Drug Administration) and PMDA (Pharmaceuticals and Medical Devices Agency). It enhances consistency, traceability, and interoperability across studies.
 
 This project presents a minimally viable pipeline for automating SDTM-compliant data transformation in the pharmaceutical and medical device industries. The pipeline ingests raw clinical data from diverse sources—including Electronic Data Capture (EDC), laboratory systems, wearable devices, manual uploads, and APIs—and processes it into CDISC SDTM datasets.
 
