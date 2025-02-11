@@ -1,9 +1,9 @@
 # Automated SDTM Data Pipeline on AWS - Serverless
 
 ## Overview
-SDTM (Study Data Tabulation Model) is a standardized structure for human clinical trial data tabulations, developed by CDISC (Clinical Data Interchange Standards Consortium) for organizing and submitting trial data to regulatory agencies such as the FDA (Food & Drug Administration) and PMDA (Pharmaceuticals and Medical Devices Agency). It enhances consistency, traceability, and interoperability across studies.
+SDTM (Study Data Tabulation Model) is a standardized format for organizing human clinical trial data. Developed by CDISC (Clinical Data Interchange Standards Consortium), it's used to structure and submit trial data to regulatory agencies like the FDA (Food & Drug Administration) and PMDA (Pharmaceuticals and Medical Devices Agency). SDTM improves consistency, traceability, and interoperability across studies.
 
-This project presents a minimally viable concept for a pipeline that automates SDTM-compliant data transformation in the pharmaceutical and medical device industries. It ingests raw clinical data from various sources, including EDC, labs, wearables, manual uploads, and APIs, converting it into CDISC SDTM datasets.
+This project presents a minimally viable concept pipeline that automates SDTM-compliant data transformation in clinical trial industries. It is designed to ingest raw clinical data from various sources, including Electronic Data Capture (EDC), labs, wearables, manual uploads, and APIs, converting it into CDISC SDTM datasets.
 
 ---
 
@@ -11,11 +11,11 @@ This project presents a minimally viable concept for a pipeline that automates S
 
 ### Evaluation of Pelvinexinol in Endometriosis (VEXIN-03) - Phase II Clinical Trial
 **Objective:**
-The VEXIN-03 clinical trial is designed to assess the efficacy and safety of Pelvinexinol, a pain medication for women with endometriosis. This study includes a diverse patient population and evaluates the medication’s impact on pain relief using Patient-Reported Outcomes (PRO) data. Conducted across multiple sites in the United States, the trial encompasses patients of various ages, ethnic backgrounds, and medical histories. In addition to data collected at study sites, patients will also track key health metrics through external health apps.
+The VEXIN-03 clinical trial is designed to assess the efficacy and safety of Pelvinexinol, a pain medication for women with endometriosis in the United States. This study evaluates the medication’s impact on pain relief using Patient-Reported Outcomes (PRO) data. In addition to data collected at study sites, patients will also track key health metrics through external health apps.
 
 ### External Application Data Sources  
 
-#### 1. Patient-Reported Outcomes (PROs) from External Health Apps   (Clue, Flo, MyPainDiary)
+#### 1. Patient-Reported Outcomes (PROs) from External Health Apps (Clue, Flo, MyPainDiary)
 ##### **Types of Data Collected**
 - **Daily pain scores** (1-10 scale, different body areas)  
 - **Menstrual cycle tracking** (flow, symptoms, duration)  
