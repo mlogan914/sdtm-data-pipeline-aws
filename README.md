@@ -168,7 +168,6 @@ You can use the prebuilt Lambda function for PII redaction by attaching it to an
 
 ### CI/CD
 - `GitHub Actions`: Implements CI/CD workflows for automated deployment of transformation scripts to AWS ECS.
-<<<<<<< HEAD
 ---
 ## Pipeline Execution Flow
 
