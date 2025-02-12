@@ -24,8 +24,8 @@ resource "aws_sfn_state_machine" "my_state_machine" {
       "Type": "Task",
       "Resource": "arn:aws:states:::lambda:invoke",
       "Parameters": {
-        "FunctionName": "arn:aws:lambda:us-west-1:525425830681:function:process_raw_data:$LATEST",
-        "Payload.$": "$"
+        "FunctionName": "arn:aws:lambda:us-west-2:525425830681:function:process_raw_data:$LATEST",
+        "Payload.$": "$" 
       },
       "Retry": [
         {
@@ -124,7 +124,7 @@ resource "aws_sfn_state_machine" "my_state_machine" {
       "Resource": "arn:aws:states:::ecs:runTask",
       "Parameters": {
         "LaunchType": "FARGATE",
-        "Cluster": "arn:aws:ecs:us-west-1:525425830681:cluster/ecs-cluster-5201201",
+        "Cluster": "arn:aws:ecs:us-west-2:525425830681:cluster/ecs-cluster-5201201",
         "TaskDefinition": "${var.ecs_task_transform_arn}",
         "NetworkConfiguration": {
           "AwsvpcConfiguration": {
@@ -154,7 +154,7 @@ resource "aws_sfn_state_machine" "my_state_machine" {
       "Resource": "arn:aws:states:::ecs:runTask",
       "Parameters": {
         "LaunchType": "FARGATE",
-        "Cluster": "arn:aws:ecs:us-west-1:525425830681:cluster/ecs-cluster-5201201",
+        "Cluster": "arn:aws:ecs:us-west-2:525425830681:cluster/ecs-cluster-5201201",
         "TaskDefinition": "${var.ecs_task_validate_arn}",
         "NetworkConfiguration": {
           "AwsvpcConfiguration": {
@@ -183,7 +183,7 @@ resource "aws_sfn_state_machine" "my_state_machine" {
       "Type": "Task",
       "Resource": "arn:aws:states:::sns:publish",
       "Parameters": {
-        "TopicArn": "arn:aws:sns:us-west-1:525425830681:sns-topic-5201201",
+        "TopicArn": "arn:aws:sns:us-west-2:525425830681:sns-topic-5201201",
         "Subject": "ECS Task Failure Notification",
         "Message.$": "$"
       },

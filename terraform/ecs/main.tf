@@ -57,7 +57,7 @@ resource "aws_ecs_task_definition" "ecs_task_transform" {
         logDriver = "awslogs"
         options = {
           awslogs-group         = "${aws_cloudwatch_log_group.ecs_log_group_transform.name}"
-          awslogs-region        = "us-west-1" # Change to your region
+          awslogs-region        = var.region
           awslogs-stream-prefix = "ecs"
         }
       }
@@ -88,7 +88,7 @@ resource "aws_ecs_task_definition" "ecs_task_validate" {
         logDriver = "awslogs"
         options = {
           awslogs-group         = "${aws_cloudwatch_log_group.ecs_log_group_validate.name}"
-          awslogs-region        = "us-west-1" # Change to your region
+          awslogs-region        = var.region
           awslogs-stream-prefix = "ecs"
         }
       }
@@ -125,34 +125,3 @@ resource "aws_security_group" "ecs_sg" {
     cidr_blocks = ["0.0.0.0/0"] # Needed for ECR, S3, Logs, etc.
   }
 }
-
-# ---------------------------------------
-# Create and ECS Service
-# ---------------------------------------
-# resource "aws_ecs_service" "ecs_service_transform" {
-#   name            = "ecs-service-5201201-transform"
-#   cluster         = aws_ecs_cluster.ecs_cluster.id
-#   task_definition = aws_ecs_task_definition.ecs_task_transform.arn
-#   desired_count   = 1
-#   launch_type     = "FARGATE"
-
-#   network_configuration {
-#     subnets         = var.private_subnets
-#     security_groups = [aws_security_group.ecs_sg.id]
-#     assign_public_ip = false
-#   }
-# }
-
-# resource "aws_ecs_service" "ecs_service_validate" {
-#   name            = "ecs-service-5201201-validate"
-#   cluster         = aws_ecs_cluster.ecs_cluster.id
-#   task_definition = aws_ecs_task_definition.ecs_task_validate.arn
-#   desired_count   = 1
-#   launch_type     = "FARGATE"
-
-#   network_configuration {
-#     subnets         = var.private_subnets
-#     security_groups = [aws_security_group.ecs_sg.id]
-#     assign_public_ip = false
-#   }
-# }

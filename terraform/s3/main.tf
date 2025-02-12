@@ -156,7 +156,7 @@ resource "aws_s3_bucket_policy" "audit-bucket-policy" {
         }
         "Condition" = {
           "StringEquals" = {
-            "aws:RequestedRegion" = "us-west-1"
+            "aws:RequestedRegion" = "${var.region}"
           }
         }
       }
@@ -189,7 +189,7 @@ resource "aws_s3_bucket_policy" "output-bucket-policy" {
         },
         "Condition": {
           "StringEquals": {
-            "aws:RequestedRegion": "us-west-1" 
+            "aws:RequestedRegion": "${var.region}" 
           }
         }
       },
@@ -199,7 +199,7 @@ resource "aws_s3_bucket_policy" "output-bucket-policy" {
           "Service": "glue.amazonaws.com"
         },
         "Action": "s3:GetObject",
-        "Resource": "${aws_s3_bucket.output-bucket.arn}/*" # Allow Glue to read
+        "Resource": "${aws_s3_bucket.output-bucket.arn}/*"
       }
     ]
   })
@@ -212,4 +212,44 @@ resource "aws_s3_bucket" "appdata-bucket" {
   bucket = var.appdata_bucket_name
 
   tags = var.tags
+}
+
+# ----------------------------------------
+# S3 Access Point
+# ----------------------------------------
+
+resource "aws_s3_access_point" "s3_access_point" {
+  bucket = aws_s3_bucket.appdata-bucket.id
+  name   = var.s3_access_point_name
+}
+
+# ==================================================
+#   S3 Object Lambda Access Point
+# ==================================================
+#
+#   NOTE: If using prebuilt Lambda functions, deploy them first, 
+#         then provide the function ARN in root module.
+#
+#   Documentation:
+#   - S3 Object Lambda: https://docs.aws.amazon.com/AmazonS3/latest/userguide/olap-examples.html
+#   - PII Entity Types: https://docs.aws.amazon.com/comprehend/latest/dg/how-pii.html
+#   - Amazon Comprehend Regions: https://docs.aws.amazon.com/general/latest/gr/comprehend.html
+# ==================================================
+
+resource "aws_s3control_object_lambda_access_point" "s3_object_lambda_access_point" {
+  name = var. s3_object_lambda_access_point_name
+
+  configuration {
+    supporting_access_point = aws_s3_access_point.s3_access_point.arn
+
+    transformation_configuration {
+      actions = ["GetObject"]
+
+      content_transformation {
+        aws_lambda {
+          function_arn = "${var.s3_object_lambda_access_point_arn}" # Using prebuilt function
+        }
+      }
+    }
+  }
 }

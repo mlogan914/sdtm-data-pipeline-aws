@@ -3,6 +3,9 @@
 # 
 # This file defines input variables for the ECS module.
 # ================================================================
+variable "region" {
+    type = string
+}
 
 variable "vpc_id" {
   type = string

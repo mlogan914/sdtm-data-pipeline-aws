@@ -4,6 +4,11 @@
 # This file defines input variables for the s3 module.
 # ================================================================
 
+variable "region" {
+  type        = string
+  description = "AWS Region"
+}
+
 variable "raw_bucket_name" {
   type        = string
   description = "The name of the S3 bucket for raw data"
@@ -32,6 +37,21 @@ variable "audit_bucket_name" {
   variable "appdata_bucket_name" {
    type        = string
    description = "The name of the S3 bucket for app data"
+ }
+
+   variable "s3_access_point_name" {
+   type        = string
+   description = "The name of the S3 access point name"
+ }
+
+  variable "s3_object_lambda_access_point_name" {
+   type        = string
+   description = "The name of the S3 object lambda access point name"
+ }
+
+   variable "s3_object_lambda_access_point_arn" {
+   type        = string
+   description = "The name of the S3 object lambda access point ARN"
  }
 
 variable "tags" {
