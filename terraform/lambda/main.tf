@@ -12,3 +12,4 @@ resource "aws_lambda_function" "process_raw_data" {
   source_code_hash = filebase64sha256("./lambda/lambda_function.zip")
 }
 
+
