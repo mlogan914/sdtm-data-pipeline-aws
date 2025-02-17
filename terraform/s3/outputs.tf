@@ -24,6 +24,10 @@ output "output_bucket_name" {
   value = aws_s3_bucket.output-bucket.bucket
 }
 
+output "query_results_bucket_name" {
+  value = aws_s3_bucket.query-results-bucket.bucket
+}
+
 output "raw_bucket_arn" {
   value = aws_s3_bucket.raw-prd-bucket.arn
 }
@@ -42,4 +46,8 @@ output "audit_bucket_arn" {
 
 output "output_bucket_arn" {
   value = aws_s3_bucket.output-bucket.arn
+}
+
+output "query_results_bucket_id" {
+  value = aws_s3_bucket.query-results-bucket.id
 }

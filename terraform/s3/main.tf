@@ -206,7 +206,7 @@ resource "aws_s3_bucket_policy" "output-bucket-policy" {
 }
 
 # ----------------------------------------
-# Output Bucket
+# Appdata Bucket
 # ----------------------------------------
 resource "aws_s3_bucket" "appdata-bucket" {
   bucket = var.appdata_bucket_name
@@ -215,9 +215,44 @@ resource "aws_s3_bucket" "appdata-bucket" {
 }
 
 # ----------------------------------------
+# Athena Query Results Bucket
+# ----------------------------------------
+resource "aws_s3_bucket" "query-results-bucket" {
+  bucket = var.query_results_bucket_name
+
+  tags = var.tags
+}
+
+# Athena Query Bucket policy
+resource "aws_s3_bucket_policy" "athena_results_policy" {
+  bucket = aws_s3_bucket.query-results-bucket.id
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect    = "Allow",
+        Principal = {
+          Service = "athena.amazonaws.com"
+        },
+        Action   = "s3:PutObject",
+        Resource = "${aws_s3_bucket.query-results-bucket.arn}/*"
+      },
+      {
+        Effect    = "Allow",
+        Principal = {
+          Service = "athena.amazonaws.com"
+        },
+        Action   = "s3:ListBucket",
+        Resource = "${aws_s3_bucket.query-results-bucket.arn}"
+      }
+    ]
+  })
+}
+
+# ----------------------------------------
 # S3 Access Point
 # ----------------------------------------
-
 resource "aws_s3_access_point" "s3_access_point" {
   bucket = aws_s3_bucket.appdata-bucket.id
   name   = var.s3_access_point_name
@@ -235,7 +270,6 @@ resource "aws_s3_access_point" "s3_access_point" {
 #   - PII Entity Types: https://docs.aws.amazon.com/comprehend/latest/dg/how-pii.html
 #   - Amazon Comprehend Regions: https://docs.aws.amazon.com/general/latest/gr/comprehend.html
 # ==================================================
-
 resource "aws_s3control_object_lambda_access_point" "s3_object_lambda_access_point" {
   name = var. s3_object_lambda_access_point_name
 
@@ -253,3 +287,4 @@ resource "aws_s3control_object_lambda_access_point" "s3_object_lambda_access_poi
     }
   }
 }
+

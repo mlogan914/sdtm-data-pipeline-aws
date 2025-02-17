@@ -1,4 +1,4 @@
-# Automated SDTM Data Pipeline on AWS - Serverless
+# Automated SDTM Data Pipeline on AWS (Custom Script-Based)- Serverless
 
 ## Overview
 
@@ -46,7 +46,7 @@ The VEXIN-03 clinical trial is designed to assess the efficacy and safety of Pel
 **Requirements:**
 1. **Data Ingestion & Integration** The project should integrate disparate datasets from the clinical trial into a unified pipeline.
 2. **Privacy & De-identification** – Wearable device data will not be integrated into SDTM tables but will be provided directly to various end users. To ensure privacy, the data must be masked for PII while remaining in its raw form for in-place querying. Granular access control is required since different users may need access to different portions of the data.
-3. **Standardization & Validation** – Site-collected patient data will be standardized across study sites and time points to enable the creation of SDTM datasets for clinical analysis.
+3. **Standardization & Validation** – Site-collected patient data will be standardized across study sites and time points to enable the creation of SDTM datasets, using custom scripts, for clinical analysis.
 4. **Data Access & Aggregation** – Trial data will undergo further transformation by statistical programmers and statisticians to generate ad hoc reports. End users must have easy access to query the data directly.
 5. **Automated Data Processing** – The data pipeline should handle updates from multiple sites and automate the steps of data collection, de-identification, transformation, and aggregation.
 ---
@@ -58,7 +58,7 @@ This pipeline is a fully serverless data processing framework built using AWS se
 ## Key Features
 
 ### Serverless AWS-Based Architecture
-- **S3 Object Lambda** – Filters and redacts PII from patient-reported outcomes before ingestion.
+- **S3 Object Lambda** – Filters and redacts PII from patient-reported outcomes.
 - **S3** – Stores raw, staged, final SDTM datasets, complicance reports, and logs.
 - **Step Functions** – Orchestrates ingestion & processing, validation, and transformation workflows.
 - **Glue** – Manages metadata, enforces data quality checks, and updates centralized metadata repositories.

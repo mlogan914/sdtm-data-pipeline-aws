@@ -74,7 +74,7 @@ def copy_files_with_extensions(source_bucket, destination_bucket, extensions):
         print(f"Error listing files in the source bucket: {str(e)}")
 
 def main():
-    # Sample input file (placeholder for actual input file like dm.csv)
+    # Sample input file (placeholder for actual input file like dm.xpt)
     input_file = "/data/dm.xpt" 
 
     # Simulate the P21 validation check
@@ -99,3 +99,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+### -- End of Program Code -- ###
