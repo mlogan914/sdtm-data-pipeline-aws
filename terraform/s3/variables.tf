@@ -39,6 +39,10 @@ variable "audit_bucket_name" {
    description = "The name of the S3 bucket for app data"
  }
 
+variable "query_results_bucket_name" {
+  type        = string
+  description = "The name of the S3 bucket for Athena Query Results"
+}
    variable "s3_access_point_name" {
    type        = string
    description = "The name of the S3 access point name"

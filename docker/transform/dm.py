@@ -28,7 +28,7 @@ df = pd.read_csv('raw_dm.csv', dtype=str)
 
 # Function to transform the data
 def transform_data(df):
-    # Define the study details (constants)
+    # Define the study constants
     study = "VEXIN - Evaluation of Pelvinexinol in Endometriosis"
     studyid = "VEXIN-03"
     datapagename = "Demographics"
@@ -56,7 +56,7 @@ def transform_data(df):
     # Apply race mapping, handle 'Other' case
     df['RACE'] = df.apply(lambda row: race_map[row['race']] if row['race'] != 'Other' else race_map['Other'](row['race_other']), axis=1)
 
-    # Uppercase ETHNIC
+    # Upcase ETHNIC
     df['ETHNIC'] = df['ethnic'].str.upper()
 
     # Convert date columns to ISO8601 format and string type
@@ -110,7 +110,7 @@ transformed_df.to_csv('/tmp/dm.csv', index=False)
 table = pa.Table.from_pandas(transformed_df)
 pq.write_table(table, '/tmp/dm.parquet')
 
-# Output the transformed data to XPT format (using pyreadstat)
+# Output the transformed data to XPT format
 pyreadstat.write_xport(transformed_df, '/tmp/dm.xpt')
 
 # Upload files to S3
@@ -119,3 +119,5 @@ s3.upload_file('/tmp/dm.parquet', bucket_name, 'dm.parquet')
 s3.upload_file('/tmp/dm.xpt', bucket_name, 'dm.xpt')
 
 print("Data transformation complete and saved in CSV, Parquet, and XPT formats.")
+
+### -- End of Program Code -- ###
