@@ -56,7 +56,8 @@ resource "aws_s3_bucket_notification" "landing_bucket_notification" {
 
   lambda_function {
     lambda_function_arn = var.lambda_function_arn
-    events              = ["s3:ObjectCreated:*"]
+    events              = ["s3:ObjectCreated:Put"]
+    filter_suffix       = ".csv" # Otherwise, the partition write by glue crawler will trigger another workflow execution
   }
 
   depends_on = [

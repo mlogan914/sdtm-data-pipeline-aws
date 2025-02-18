@@ -1,4 +1,4 @@
-region                             = "us-west2"
+region                             = "us-west-2"
 raw_bucket_name                    = "raw-prd-5201201"
 scripts_bucket_name                = "scripts-5201201"
 oper_bucket_name                   = "oper-5201201"

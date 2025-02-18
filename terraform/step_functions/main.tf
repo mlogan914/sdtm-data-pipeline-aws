@@ -34,10 +34,7 @@ resource "aws_sfn_state_machine" "my_state_machine" {
             "Lambda.AWSLambdaException",
             "Lambda.SdkClientException",
             "Lambda.TooManyRequestsException"
-          ],
-          "IntervalSeconds": 10,
-          "MaxAttempts": 2,
-          "BackoffRate": 2
+          ]
         }
       ],
       "Next": "StartCrawler"
