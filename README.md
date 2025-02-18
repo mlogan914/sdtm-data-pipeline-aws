@@ -44,26 +44,26 @@ The VEXIN-03 clinical trial is designed to assess the efficacy and safety of Pel
   - **GPS coordinates**
   
 **Requirements:**
-1. **Data Ingestion & Integration** The project should integrate disparate datasets from the clinical trial into a unified pipeline.
-2. **Privacy & De-identification** – Wearable device data will not be integrated into SDTM tables but will be provided directly to various end users. To ensure privacy, the data must be masked for PII while remaining in its raw form for in-place querying. Granular access control is required since different users may need access to different portions of the data.
-3. **Standardization & Validation** – Site-collected patient data will be standardized across study sites and time points to enable the creation of SDTM datasets, using custom scripts, for clinical analysis.
-4. **Data Access & Aggregation** – Trial data will undergo further transformation by statistical programmers and statisticians to generate ad hoc reports. End users must have easy access to query the data directly.
-5. **Automated Data Processing** – The data pipeline should handle updates from multiple sites and automate the steps of data collection, de-identification, transformation, and aggregation.
+1. **Data Ingestion & Integration** – Unify disparate datasets from clinical trials into a single pipeline.
+2. **Privacy & De-identification** – Wearable device data remains outside SDTM tables but is accessible to end users. PII must be masked while preserving raw data for in-place querying, with granular access controls for different users.
+3. **Standardization & Validation** – Site-collected patient data must be standardized across study sites and time points to generate SDTM datasets for clinical analysis using custom scripts.
+4. **Data Access & Aggregation** – Statistical programmers and statisticians must easily query and transform trial data to generate ad hoc reports.
+5. **Automated Data Processing** – The pipeline should automate data collection, de-identification, transformation, and aggregation while handling updates from multiple study sites.
 ---
 ## Architecture Diagram
-This pipeline is a fully serverless data processing framework built using AWS services to automate data transformation, integration, and validation of data, eliminating infrastructure management while optimizing performance.
+This pipeline is a fully serverless data processing framework built using AWS services to automate data transformation, integration, and data validation, eliminating infrastructure management while optimizing performance.
 
 ![diagram](architechture.png)
 ---
 ## Key Features
 
 ### Serverless AWS-Based Architecture
-- **S3 Object Lambda** – Filters and redacts PII from patient-reported outcomes.
 - **S3** – Stores raw, staged, final SDTM datasets, complicance reports, and logs.
 - **Step Functions** – Orchestrates ingestion & processing, validation, and transformation workflows.
 - **Glue** – Manages metadata, enforces data quality checks, and updates centralized metadata repositories.
 - **ECS (Fargate)** – Runs SDTM transformation and validation scripts.
 - **Lambda** – Handles event-driven workflows, metadata updates, and auxiliary tasks.
+- **S3 Object Lambda** – Filters and redacts PII from patient-reported outcomes.
 - **CloudWatch** – Provides real-time monitoring, logging, and alerts to track pipeline performance.
 - **Athena** – Enables serverless SQL-based querying for end users.
 
@@ -72,46 +72,56 @@ This pipeline is a fully serverless data processing framework built using AWS se
 
 #### Directory Structure
 ```
-├── docker                          # Docker configurations for transform and validate
-│   ├── transform                   # Transformation scripts and Docker configurations
-│   │   ├── dm.py                   # Data transformation script
-│   │   ├── dockerfile              # Dockerfile for building the transformation container
-│   │   └── requirements.txt        # Python dependencies for transformation process
-│   └── validate                    # Validation scripts and Docker configuration
-│       ├── dockerfile              # Dockerfile for the validation container
-│       └── run_p21.py              # Script to run data validation
-├── raw_dm.csv                      # Raw data file for testing and validation
-└── terraform                       # Terraform configurations for provisioning AWS resources
-    ├── ecs                         # ECS-related infrastructure configuration
-    │   ├── main.tf                 # ECS configuration
-    │   ├── roles.tf                # IAM roles for ECS
-    │   └── variables.tf            # ECS-related variables
-    ├── glue                        # AWS Glue infrastructure and data quality scripts
-    │   ├── glue_data_quality.py    # Data quality check script for Glue
-    │   ├── main.tf                 # Glue configuration
-    │   ├── outputs.tf              # Glue outputs
-    │   ├── roles.tf                # IAM roles for Glue
-    │   └── variables.tf            # Glue-related variables
-    ├── lambda                      # Lambda functions and configuration
-    │   ├── lambda_function.py      # Lambda function code
-    │   ├── lambda_function.zip     # Zipped Lambda function for deployment
-    │   ├── main.tf                 # Lambda infrastructure configuration
-    │   └── roles.tf                # IAM roles for Lambda
-    ├── main.tf                     # Main Terraform configuration
-    ├── providers.tf                # AWS provider configurations for Terraform
-    ├── s3                          # S3-related infrastructure configuration
-    │   ├── main.tf                 # S3 infrastructure configuration
-    │   ├── outputs.tf              # S3 outputs
-    │   └── variables.tf            # S3-related variables
-    ├── sns                         # SNS infrastructure configuration
-    │   └── main.tf                 # SNS configuration
-    ├── step_functions              # AWS Step Functions infrastructure configuration
-    │   ├── main.tf                 # Step Functions configuration
-    │   ├── roles.tf                # IAM roles for Step Functions
-    │   └── variables.tf            # Step Functions-related variables
-    └── vpc                         # VPC-related infrastructure configuration
-        ├── main.tf                 # VPC configuration
-        └── outputs.tf              # VPC outputs
+├── data                                # Sample raw data
+├── docker                              # Docker files + scripts for transform and validate
+│   ├── transform                       # Transformation scripts
+│   │   ├── dm.py                       # Sample SDTM transformation script for Demographics (DM)
+│   │   ├── dockerfile                  # Transform task dockerfile
+│   │   └── requirements.txt            # Transform dependencies
+│   └── validate                        # Validation scripts
+│       ├── dockerfile                  # Validate task dockerfile
+│       └── run_p21.py                  # Sample P21 validation script
+└── terraform                           # Terraform main folder
+	├── athena                          # Athena module
+	│   ├── main.tf                     # Athena configuration
+	│   └── variables.tf                # Athena-related variables
+	├── ecs                             # ECS module
+	│   ├── main.tf                     # ECS configuration
+	│   ├── outputs.tf                  # ECS outputs
+	│   ├── roles.tf                    # IAM roles for ECS
+	│   └── variables.tf                # ECS-related variables
+	├── glue                            # AWS Glue module + scripts
+	│   ├── glue_data_quality.py        # Data quality check script for Glue
+	│   ├── main.tf                     # Glue configuration
+	│   ├── outputs.tf                  # Glue outputs
+	│   ├── roles.tf                    # IAM roles for Glue
+	│   └── variables.tf                # Glue-related variables
+	├── lambda                          # Lambda module + scripts
+	│   ├── lambda_function.py          # Lambda function code
+	│   ├── lambda_function.zip         # Zipped Lambda function for deployment
+	│   ├── main.tf                     # Lambda configuration
+	│   ├── outputs.tf                  # Lambda outputs
+	│   └── roles.tf                    # IAM roles for Lambda
+	├── main.tf                         # Terraform root module
+	├── providers.tf                    # AWS provider configurations for Terraform
+	├── s3                              # S3 module
+	│   ├── main.tf                     # S3 configuration
+	│   ├── outputs.tf                  # S3 outputs
+	│   └── variables.tf                # S3-related variables
+	├── sns                             # SNS module
+	│   ├── main.tf                     # SNS configuration
+	│   └── outputs.tf                  # SNS outputs
+	├── step_functions                  # AWS Step Functions module
+	│   ├── main.tf                     # Step Functions configuration
+	│   ├── roles.tf                    # IAM roles for Step Functions
+	│   └── variables.tf                # Step Functions-related variables
+	├── terraform.tfstate               # Terraform state file (tracked remotely in production) [REDACTED]
+	├── terraform.tfstate.backup        # Terraform state file backup [REDACTED]
+	├── terraform.tfvars                # Terraform variables file
+	├── variables.tf                    # Global Terraform variables
+	└── vpc                             # VPC module
+		├── main.tf                     # VPC configuration
+		└── outputs.tf                  # VPC outputs
 ```
 ### Compliance Validation  
 - Pinnacle21 (previously known as OpenCDISC) – is a widely used validation tool in the clinical research that provides automated SDTM compliance verification. 
@@ -223,3 +233,5 @@ GitHub Actions automates deployment of transformation scripts to AWS ECS, enabli
 
 ## Outcome
 This design concept lays the foundation for automating data processing and compliance workflows in the pharma and medical device industries. It simplifies operations while ensuring high-quality, compliant datasets that meet CDISC standards.
+
+## Pipeline Deployment
