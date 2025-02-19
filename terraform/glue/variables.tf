@@ -14,10 +14,10 @@ variable "scripts_bucket_name" {
   description = "The name of the S3 bucket for scripts"
 }
 
-#  variable "output_bucket_name" {
-#    type        = string
-#    description = "The name of the S3 bucket for output"
-#  }
+ variable "output_bucket_name" {
+   type        = string
+   description = "The name of the S3 bucket for output"
+ }
 
 variable "raw_bucket_arn" {
   description = "The ARN of the raw S3 bucket"
@@ -28,4 +28,10 @@ variable "scripts_bucket_arn" {
   description = "The ARN of the scripts S3 bucket"
   type        = string
 }
+
+variable "output_bucket_arn" {
+  description = "The ARN of the output S3 bucket"
+  type        = string
+}
+
 

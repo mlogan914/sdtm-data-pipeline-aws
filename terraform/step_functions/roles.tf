@@ -38,7 +38,10 @@ resource "aws_iam_policy" "step_function_policy" {
         "glue:StartCrawler",
         "glue:GetCrawler"
     ],
-      "Resource": "${var.glue_crawler_arn}"
+      "Resource": [
+        "${var.glue_crawler_arn}",
+        "${var.output_crawler_arn}"
+    ]
     },
     {
       "Effect": "Allow",
@@ -87,7 +90,8 @@ resource "aws_iam_policy" "step_function_policy" {
       ],
       "Resource": [
         "${var.ecs_task_transform_arn}",
-        "${var.ecs_task_validate_arn}"
+        "${var.ecs_task_validate_arn}",
+        "arn:aws:ecs:us-west-2:525425830681:task/*"
     ]
     },
     {

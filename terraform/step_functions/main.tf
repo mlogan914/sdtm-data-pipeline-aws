@@ -136,7 +136,7 @@ resource "aws_sfn_state_machine" "my_state_machine" {
           }
         }
       },
-      "Next": "ECSRunTaskVALIDATE",
+      "Next": "WaitForTransformTask",
       "Catch": [
         {
           "ErrorEquals": [
@@ -145,6 +145,11 @@ resource "aws_sfn_state_machine" "my_state_machine" {
           "Next": "SNSPublish"
         }
       ]
+    },
+    "WaitForTransformTask": {
+      "Type": "Wait",
+      "Seconds": 120,
+      "Next": "ECSRunTaskVALIDATE"
     },
     "ECSRunTaskVALIDATE": {
       "Type": "Task",
@@ -162,10 +167,11 @@ resource "aws_sfn_state_machine" "my_state_machine" {
             "SecurityGroups": [
               "${var.ecs_sg_id}"
             ],
-            "AssignPublicIp": "ENABLED"
+             "AssignPublicIp": "ENABLED"
           }
         }
       },
+      "Next": "WaitForValidateTask",
       "Catch": [
         {
           "ErrorEquals": [
@@ -173,8 +179,47 @@ resource "aws_sfn_state_machine" "my_state_machine" {
           ],
           "Next": "SNSPublish"
         }
+      ]
+    },
+    "WaitForValidateTask": {
+      "Type": "Wait",
+      "Seconds": 120,
+      "Next": "StartOutputCrawler"
+    },
+    "StartOutputCrawler": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::aws-sdk:glue:startCrawler",
+      "Parameters": {
+        "Name": "output-crawler-5201201"
+      },
+      "Next": "WaitForOutputCrawler"
+    },
+    "WaitForOutputCrawler": {
+      "Type": "Wait",
+      "Seconds": 5,
+      "Next": "CheckOutputCrawlerStatus"
+    },
+    "CheckOutputCrawlerStatus": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::aws-sdk:glue:getCrawler",
+      "Parameters": {
+        "Name": "output-crawler-5201201"
+      },
+      "Next": "EvaluateOutputCrawlerStatus"
+    },
+    "EvaluateOutputCrawlerStatus": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Variable": "$.Crawler.State",
+          "StringEquals": "READY",
+          "Next": "WorkflowComplete"
+        }
       ],
-      "End": true
+      "Default": "WaitForOutputCrawler"
+    },
+    "WorkflowComplete": {
+      "Type": "Succeed"
     },
     "SNSPublish": {
       "Type": "Task",

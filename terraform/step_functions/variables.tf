@@ -6,8 +6,14 @@
 
 variable glue_crawler_arn {
   type        = string
-  description = "ARN of the Glue Crawler"
+  description = "ARN of the Glue Raw bucket Glue crawler"
 }
+
+variable output_crawler_arn {
+  type        = string
+  description = "ARN of the Output bucket Glue crawler"
+}
+
 variable glue_job_arn {
   type        = string
   description = "ARN of the Glue Data Quality Job"
