@@ -44,8 +44,10 @@ module "glue" {
   # Inputs from the S3 module
   raw_bucket_name     = module.s3.raw_bucket_name
   scripts_bucket_name = module.s3.scripts_bucket_name
+  output_bucket_name  = module.s3.output_bucket_name
   raw_bucket_arn      = module.s3.raw_bucket_arn
   scripts_bucket_arn  = module.s3.scripts_bucket_arn
+  output_bucket_arn   = module.s3.output_bucket_arn
 }
 
 #---------------------------------------------------------------
@@ -59,8 +61,9 @@ module "step_functions" {
   lambda_function_arn = module.lambda.process_raw_data_arn
 
   # Inputs from the Glue module
-  glue_crawler_arn = module.glue.glue_crawler_arn
-  glue_job_arn     = module.glue.glue_job_arn
+  glue_crawler_arn   = module.glue.glue_crawler_arn
+  output_crawler_arn = module.glue.output_crawler_arn
+  glue_job_arn       = module.glue.glue_job_arn
 
   # Inputs from SNS module
   sns_topic_arn = module.sns.sns_topic_arn

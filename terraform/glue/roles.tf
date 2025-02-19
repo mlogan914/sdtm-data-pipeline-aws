@@ -36,7 +36,8 @@ resource "aws_iam_policy" "glue_s3_policy" {
         ],
         "Resource": [
           "${var.raw_bucket_arn}/*",
-          "${var.scripts_bucket_arn}/*"
+          "${var.scripts_bucket_arn}/*",
+          "${var.output_bucket_arn}/*"
         ]
       }
     ]
