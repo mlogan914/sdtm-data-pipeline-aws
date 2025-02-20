@@ -226,12 +226,16 @@ GitHub Actions automates deployment of transformation scripts to AWS ECS, enabli
 
 ---
 
+## Outcome
+This design concept lays the foundation for automating data processing and compliance workflows in the pharma and medical device industries. It simplifies operations while ensuring high-quality, compliant datasets that meet CDISC standards.
+
+---
+
+## Pipeline Deployment
+![diagram](deploy_pipeline.png)
+---
+
 ## Step Functions Workflow
 ![diagram](stepfunctions_graph.png)
 
 ---
-
-## Outcome
-This design concept lays the foundation for automating data processing and compliance workflows in the pharma and medical device industries. It simplifies operations while ensuring high-quality, compliant datasets that meet CDISC standards.
-
-## Pipeline Deployment
