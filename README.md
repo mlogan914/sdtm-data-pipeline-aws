@@ -4,7 +4,7 @@
 
 This project presents a minimally viable concept pipeline that automates SDTM-compliant data transformation in clinical trial industries. It is designed to ingest raw clinical data from various sources, including Electronic Data Capture (EDC), labs, wearables, manual uploads, and APIs, converting it into CDISC SDTM datasets.
 
-> **Context:** SDTM (Study Data Tabulation Model) is a standardized format for organizing human clinical trial data. Developed by CDISC (Clinical Data Interchange Standards Consortium), it's used to structure and submit trial data to regulatory agencies like the FDA (Food & Drug Administration) and PMDA (Pharmaceuticals and Medical Devices Agency). SDTM improves consistency, traceability, and interoperability across studies.
+> **Context:** SDTM (Study Data Tabulation Model) is a standardized format for organizing human clinical trial data. Developed by CDISC (Clinical Data Interchange Standards Consortium), it's used to structure and submit trial data to regulatory agencies like the FDA (Food & Drug Administration) and PMDA (Pharmaceuticals and Medical Devices Agency). SDTM improves data consistency, traceability, and interoperability across studies.
 
 ---
 
@@ -12,7 +12,7 @@ This project presents a minimally viable concept pipeline that automates SDTM-co
 
 ### Evaluation of Pelvinexinol in Endometriosis (VEXIN-03) - Phase III Clinical Trial
 **Objective:**
-The VEXIN-03 clinical trial is designed to assess the efficacy and safety of Pelvinexinol, a pain medication for women with endometriosis in the United States. This study evaluates the medication’s impact on pain relief using Patient-Reported Outcomes (PRO) data. In addition to data collected at study sites, patients will also track key health metrics through external health apps.
+The VEXIN-03 clinical trial is designed to assess the efficacy and safety of Pelvinexinol, a pain medication for women with endometriosis in the United States. This study evaluates the medication’s impact on pain relief using clinical and Patient-Reported Outcomes (PRO) data. In addition to data collected at study sites, patients will also track key health metrics through external health apps.
 
 ### External Application Data Sources  
 
@@ -28,7 +28,7 @@ The VEXIN-03 clinical trial is designed to assess the efficacy and safety of Pel
   - **Names**  
   - **Emails**  
   - **Timestamps**  
-  - **Location data** (if GPS tracking is enabled)  
+  - **Location data** (if GPS tracking is enabled)
 
 ### 2. Wearable Device Data (Fitbit, Apple Health, Oura Ring)  
 #### **Types of Data Collected**
@@ -44,10 +44,10 @@ The VEXIN-03 clinical trial is designed to assess the efficacy and safety of Pel
   - **GPS coordinates**
   
 **Requirements:**
-1. **Data Ingestion & Integration** – Unify disparate datasets from clinical trials into a single pipeline.
-2. **Privacy & De-identification** – Wearable device data remains outside SDTM tables but is accessible to end users. PII must be masked while preserving raw data for in-place querying, with granular access controls for different users.
+1. **Data Ingestion & Integration** – The pipeline must unify disparate datasets into a single pipeline.
+2. **Privacy & De-identification** – Some wearable device data will be excluded from SDTM tables but will need to be accessible to end users (e.g., medical monitors). PII must be masked while preserving raw device data for in-place querying, with granular access controls for different users.
 3. **Standardization & Validation** – Site-collected patient data must be standardized across study sites and time points to generate SDTM datasets for clinical analysis using custom scripts.
-4. **Data Access & Aggregation** – Statistical programmers and statisticians must easily query and transform trial data to generate ad hoc reports.
+4. **Data Access & Aggregation** – Statistical programmers and statisticians must be able to easily query and transform trial data to generate ad hoc reports.
 5. **Automated Data Processing** – The pipeline should automate data collection, de-identification, transformation, and aggregation while handling updates from multiple study sites.
 ---
 ## Architecture Diagram
@@ -226,11 +226,6 @@ GitHub Actions automates deployment of transformation scripts to AWS ECS, enabli
 
 ---
 
-## Outcome
-This design concept lays the foundation for automating data processing and compliance workflows in the pharma and medical device industries. It simplifies operations while ensuring high-quality, compliant datasets that meet CDISC standards.
-
----
-
 ## Pipeline Deployment
 ![diagram](deploy_pipeline.png)
 ---
@@ -239,3 +234,6 @@ This design concept lays the foundation for automating data processing and compl
 ![diagram](stepfunctions_graph.png)
 
 ---
+
+## Outcome
+This design concept lays the foundation for automating data processing and compliance workflows in the pharma and medical device industries. It simplifies operations while ensuring high-quality, compliant datasets that meet CDISC standards.
