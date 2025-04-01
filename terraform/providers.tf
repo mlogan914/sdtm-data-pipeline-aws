@@ -7,6 +7,9 @@ terraform {
       source  = "hashicorp/aws"
       version = "~> 5.83"
     }
+    datadog = {
+      source = "DataDog/datadog"
+    }
   }
 }
 
@@ -15,4 +18,8 @@ terraform {
 # =============================================================
 provider "aws" {
   region = var.region
+}
+
+provider "datadog" {
+  api_key = var.datadog_api_key
 }

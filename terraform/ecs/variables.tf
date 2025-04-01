@@ -31,4 +31,6 @@ variable "output_bucket_arn" {
   type        = string
 }
 
-
+variable "datadog_api_key" {
+    type = string
+}
