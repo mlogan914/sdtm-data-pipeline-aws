@@ -108,6 +108,9 @@ module "ecs" {
   oper_bucket_arn   = module.s3.oper_bucket_arn
   audit_bucket_arn  = module.s3.audit_bucket_arn
   output_bucket_arn = module.s3.output_bucket_arn
+
+  # Inputs from Datadog (terraform.secrets.tfvars)
+  datadog_api_key = var.datadog_api_key
 }
 
 #---------------------------------------------------------------

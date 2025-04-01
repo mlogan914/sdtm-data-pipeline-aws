@@ -17,3 +17,4 @@ variable "s3_object_lambda_access_point_arn" {}
 variable "tags" {
   type = map(string)
 }
+variable "datadog_api_key" {}

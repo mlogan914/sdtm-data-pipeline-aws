@@ -43,6 +43,7 @@ resource "aws_cloudwatch_log_group" "ecs_log_group_validate" {
 resource "aws_ecs_task_definition" "ecs_task_transform" {
   family                   = "sdtm-task-transform"
   container_definitions    = jsonencode([
+    # Transform Container
     {
       name      = "sdtm-container-5201201-transform",
       image     = "${aws_ecr_repository.ecr_repo_transform.repository_url}:latest",
@@ -61,6 +62,36 @@ resource "aws_ecs_task_definition" "ecs_task_transform" {
           awslogs-stream-prefix = "ecs"
         }
       }
+    },
+    # Datadog Agent Container
+    {
+      name      = "datadog-agent",
+      image     = "public.ecr.aws/datadog/agent:latest",
+      memory    = 256,
+      cpu       = 128,
+      essential = true,
+      environment = [
+        {
+          name  = "DD_API_KEY",
+          value = var.datadog_api_key # Pass API key here
+        },
+        {
+          name  = "ECS_FARGATE",
+          value = "true"
+        },
+        {
+          name  = "DD_SITE",
+          value = "datadoghq.com"
+        }
+      ],
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          awslogs-group         = "/ecs/datadog-agent"
+          awslogs-region        = var.region
+          awslogs-stream-prefix = "datadog"
+        }
+      }
     }
   ])
   requires_compatibilities = ["FARGATE"]
@@ -74,14 +105,15 @@ resource "aws_ecs_task_definition" "ecs_task_transform" {
 resource "aws_ecs_task_definition" "ecs_task_validate" {
   family                   = "sdtm-task-validate"
   container_definitions    = jsonencode([
+    # Validation Container
     {
       name      = "sdtm-container-5201201-validate",
-      image     = "${aws_ecr_repository.ecr_repo_validate.repository_url}:latest",  # If different images, specify here
+      image     = "${aws_ecr_repository.ecr_repo_validate.repository_url}:latest",
       memory    = 512,
       cpu       = 256,
       essential = true,
       portMappings = [{
-        containerPort = 8080  # Different port if needed for the validation task
+        containerPort = 8080
         hostPort      = 8080
       }],
       logConfiguration = {
@@ -92,16 +124,46 @@ resource "aws_ecs_task_definition" "ecs_task_validate" {
           awslogs-stream-prefix = "ecs"
         }
       }
+    },
+    # Datadog Agent Container
+    {
+      name      = "datadog-agent",
+      image     = "public.ecr.aws/datadog/agent:latest",
+      memory    = 256,
+      cpu       = 128,
+      essential = true,
+      environment = [
+        {
+          name  = "DD_API_KEY",
+          value = var.datadog_api_key  # Pass API key here
+        },
+        {
+          name  = "ECS_FARGATE",
+          value = "true"
+        },
+        {
+          name  = "DD_SITE",
+          value = "datadoghq.com"
+        }
+      ],
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          awslogs-group         = "/ecs/datadog-agent"
+          awslogs-region        = var.region
+          awslogs-stream-prefix = "datadog"
+        }
+      }
     }
   ])
-  
   requires_compatibilities = ["FARGATE"]
   network_mode             = "awsvpc"
   execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
   task_role_arn            = aws_iam_role.ecs_task_execution_role.arn
-  memory                   = "1024"  
-  cpu                      = "512" 
+  memory                   = "1024"
+  cpu                      = "512"
 }
+
 
 # ---------------------------------------
 # Create a Security Group
