@@ -8,6 +8,12 @@
 # - ARN and resource IDs are parameterized to avoid hardcoding values that change per deployment.
 # ============================================================
 
+# Create a CloudWatch log group
+resource "aws_cloudwatch_log_group" "step_functions_log_group" {
+  name              = "/aws/stepfunctions/state-machine-5201201"
+  retention_in_days = 30
+}
+
 # ---------------------------------------
 # State Function State Machine
 # ---------------------------------------
@@ -234,4 +240,10 @@ resource "aws_sfn_state_machine" "my_state_machine" {
   }
 }
 ASL
+
+logging_configuration {
+  log_destination        = "${aws_cloudwatch_log_group.step_functions_log_group.arn}:*"
+  include_execution_data = true
+  level                  = "ALL"
+}
 }

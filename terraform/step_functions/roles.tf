@@ -26,7 +26,7 @@ JSON
 
 resource "aws_iam_policy" "step_function_policy" {
   name        = "step-function-policy"
-  description = "Policy for Step Functions to interact with Lambda, Glue, X-Ray, SNS, and ECS"
+  description = "Policy for Step Functions to interact with Lambda, Glue, X-Ray, SNS, ECS, and CloudWatch Logs"
 
   policy = <<JSON
 {
@@ -37,11 +37,11 @@ resource "aws_iam_policy" "step_function_policy" {
       "Action": [
         "glue:StartCrawler",
         "glue:GetCrawler"
-    ],
+      ],
       "Resource": [
         "${var.glue_crawler_arn}",
         "${var.output_crawler_arn}"
-    ]
+      ]
     },
     {
       "Effect": "Allow",
@@ -80,7 +80,7 @@ resource "aws_iam_policy" "step_function_policy" {
         "${var.ecs_cluster_arn}",
         "${var.ecs_task_transform_arn}",
         "${var.ecs_task_validate_arn}"
-    ]
+      ]
     },
     {
       "Effect": "Allow",
@@ -92,12 +92,28 @@ resource "aws_iam_policy" "step_function_policy" {
         "${var.ecs_task_transform_arn}",
         "${var.ecs_task_validate_arn}",
         "arn:aws:ecs:us-west-2:525425830681:task/*"
-    ]
+      ]
     },
     {
       "Effect": "Allow",
       "Action": "iam:PassRole",
       "Resource": "${var.ecs_task_execution_role_arn}"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "logs:CreateLogDelivery",
+        "logs:CreateLogStream",
+        "logs:GetLogDelivery",
+        "logs:UpdateLogDelivery",
+        "logs:DeleteLogDelivery",
+        "logs:ListLogDeliveries",
+        "logs:PutLogEvents",
+        "logs:PutResourcePolicy",
+        "logs:DescribeResourcePolicies",
+        "logs:DescribeLogGroups"
+      ],
+      "Resource": "*"
     }
   ]
 }
@@ -109,9 +125,3 @@ resource "aws_iam_role_policy_attachment" "step_function_policy_attachment" {
   policy_arn = aws_iam_policy.step_function_policy.arn
   role       = aws_iam_role.step_function_role.name
 }
-
-# Attach AWS managed ECS Task Execution Policy
-# resource "aws_iam_role_policy_attachment" "ecs_task_execution_attachment" {
-#   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
-#   role       = aws_iam_role.step_function_role.name
-# }

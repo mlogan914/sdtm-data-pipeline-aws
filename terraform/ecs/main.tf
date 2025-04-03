@@ -62,36 +62,6 @@ resource "aws_ecs_task_definition" "ecs_task_transform" {
           awslogs-stream-prefix = "ecs"
         }
       }
-    },
-    # Datadog Agent Container
-    {
-      name      = "datadog-agent",
-      image     = "public.ecr.aws/datadog/agent:latest",
-      memory    = 256,
-      cpu       = 128,
-      essential = true,
-      environment = [
-        {
-          name  = "DD_API_KEY",
-          value = var.datadog_api_key # Pass API key here
-        },
-        {
-          name  = "ECS_FARGATE",
-          value = "true"
-        },
-        {
-          name  = "DD_SITE",
-          value = "datadoghq.com"
-        }
-      ],
-      logConfiguration = {
-        logDriver = "awslogs"
-        options = {
-          awslogs-group         = "/ecs/datadog-agent"
-          awslogs-region        = var.region
-          awslogs-stream-prefix = "datadog"
-        }
-      }
     }
   ])
   requires_compatibilities = ["FARGATE"]
@@ -124,36 +94,6 @@ resource "aws_ecs_task_definition" "ecs_task_validate" {
           awslogs-stream-prefix = "ecs"
         }
       }
-    },
-    # Datadog Agent Container
-    {
-      name      = "datadog-agent",
-      image     = "public.ecr.aws/datadog/agent:latest",
-      memory    = 256,
-      cpu       = 128,
-      essential = true,
-      environment = [
-        {
-          name  = "DD_API_KEY",
-          value = var.datadog_api_key  # Pass API key here
-        },
-        {
-          name  = "ECS_FARGATE",
-          value = "true"
-        },
-        {
-          name  = "DD_SITE",
-          value = "datadoghq.com"
-        }
-      ],
-      logConfiguration = {
-        logDriver = "awslogs"
-        options = {
-          awslogs-group         = "/ecs/datadog-agent"
-          awslogs-region        = var.region
-          awslogs-stream-prefix = "datadog"
-        }
-      }
     }
   ])
   requires_compatibilities = ["FARGATE"]
@@ -163,7 +103,6 @@ resource "aws_ecs_task_definition" "ecs_task_validate" {
   memory                   = "1024"
   cpu                      = "512"
 }
-
 
 # ---------------------------------------
 # Create a Security Group
