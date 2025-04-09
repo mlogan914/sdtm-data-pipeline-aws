@@ -4,6 +4,7 @@
 # This file defines input variables for the Root module.
 # ================================================================
 variable "region" {}
+variable "aws_account_id" {}
 variable "raw_bucket_name" {}
 variable "scripts_bucket_name" {}
 variable "oper_bucket_name" {}
@@ -18,3 +19,5 @@ variable "tags" {
   type = map(string)
 }
 variable "datadog_api_key" {}
+variable "datadog_app_key" {}
+variable "datadog_forwarder_arn" {}

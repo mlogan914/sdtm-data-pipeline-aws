@@ -124,3 +124,15 @@ module "athena" {
   query_results_bucket_name = var.query_results_bucket_name
   query_results_bucket_id   = module.s3.query_results_bucket_id
 }
+
+#---------------------------------------------------------------
+# Datadog Module: 
+# Datadog setup for Observability & Monitoring
+#---------------------------------------------------------------
+module "datadog" {
+  source                = "./datadog"
+  aws_account_id        = var.aws_account_id
+  datadog_api_key       = var.datadog_api_key
+  datadog_app_key       = var.datadog_app_key
+  datadog_forwarder_arn = var.datadog_forwarder_arn
+}
