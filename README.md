@@ -8,6 +8,23 @@ This project presents a minimally viable concept pipeline that automates SDTM-co
 
 ---
 
+## Tools & Technologies Used:
+<div align="center">
+  <img src="https://img.shields.io/badge/Python-3776AB?style=flat&logo=python&logoColor=white" />
+  <img src="https://img.shields.io/badge/Linux-FCC624?style=flat&logo=linux&logoColor=black" />
+  <img src="https://img.shields.io/badge/Bash-4EAA25?style=flat&logo=gnu-bash&logoColor=white" />
+  <img src="https://img.shields.io/badge/AWS-232F3E?style=flat&logo=amazon-aws&logoColor=white" />
+  <img src="https://img.shields.io/badge/Terraform-7B42BC?style=flat&logo=terraform&logoColor=white" />
+  <img src="https://img.shields.io/badge/Docker-2496ED?style=flat&logo=docker&logoColor=white" />
+  <img src="https://img.shields.io/badge/Datadog-632CA6?style=flat&logo=datadog&logoColor=white" />
+  <img src="https://img.shields.io/badge/VS_Code-0078d7?style=flat&logo=visual-studio-code&logoColor=white" />
+  <img src="https://img.shields.io/badge/Git-F05032?style=flat&logo=git&logoColor=white" />
+  <img src="https://img.shields.io/badge/GitHub_Actions-2088FF?style=flat&logo=github-actions&logoColor=white" />
+</div>
+
+
+---
+
 ## Business Scenario:
 
 ### Evaluation of Pelvinexinol in Endometriosis (VEXIN-03) - Phase III Clinical Trial
@@ -69,6 +86,16 @@ This pipeline is a fully serverless data processing framework built using AWS se
 
 ### Infrastructure as Code (IaC)
 - Terraform – Used for provisioning scalable, reusable, and automated pipeline infrastructure.
+
+### Observability with Datadog
+To ensure high observability, proactive issue detection, and streamlined debugging across this serverless architecture, Datadog was integrated into the pipeline.
+
+- **AWS Integration** – Datadog receives logs, metrics, and traces from AWS services such as Lambda, ECS, Step Functions, and CloudWatch.
+- **Log Forwarding** – Enables quick drill-down from metrics to raw logs for root cause analysis.
+- **Alerting** – Custom monitors and thresholds trigger alerts.
+- **Tagging & Tracing** – ECS and Lambda components include environment and pipeline-stage tags, allowing granular filtering and performance tracing.
+
+📄[Datadog Integration Steps Document](docs/datadog_integration.md)
 
 #### Directory Structure
 ```
