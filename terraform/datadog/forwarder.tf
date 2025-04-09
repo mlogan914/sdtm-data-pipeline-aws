@@ -1,6 +1,6 @@
 # =============================================================
 # Datadog Lambda Forwarder
-# Use the Datadog Forwarder to ship logs from S3 and CloudWatch, as well as observability data from Lambda functions to Datadog. 
+# Use the Datadog Forwarder to ship logs from S3 and CloudWatch. 
 # 
 # Documentation: https://github.com/DataDog/datadog-serverless-functions/tree/master/aws/logs_monitoring
 # Note: Subscription filters are not created automatically by the DatadogForwarder. Create them directly on a Log Group.
@@ -19,7 +19,7 @@ resource "aws_cloudformation_stack" "datadog_forwarder" {
   template_url = "https://datadog-cloudformation-template.s3.amazonaws.com/aws/forwarder/latest.yaml"
 }
 
-# Log Group Subscription FIlters to Datadog Forwarder
+# Log Group Subscription Filters to Datadog Forwarder
 resource "aws_cloudwatch_log_subscription_filter" "datadog_lambda_process_raw_subscription" {
   name            = "datadog-process-raw-subscription"
   log_group_name  = "/aws/lambda/process_raw_data"
