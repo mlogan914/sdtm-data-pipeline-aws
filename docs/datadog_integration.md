@@ -16,10 +16,11 @@ Integrating Datadog provides performance monitoring, error tracking, and real-ti
 ## Datadog Reference Documents:
 
 - [Getting Stated with AWS](https://docs.datadoghq.com/getting_started/integrations/aws/#setup)
-- [Setup](https://docs.datadoghq.com/getting_started/integrations/aws/#setup)
-- [Datadog Forwarder](https://docs.datadoghq.com/logs/guide/forwarder/?tab=cloudformation)
+- [Integration for AWS Overview](https://docs.datadoghq.com/integrations/amazon_web_services/#overview)
+- [Forwarder Lambda Function](https://docs.datadoghq.com/logs/guide/forwarder/?tab=cloudformation)
 - [Datadog AWS IAM Policy](https://docs.datadoghq.com/integrations/amazon_web_services/?tab=manual#aws-iam-permissions)
 - [Amazon ECS on AWS Fargate](https://docs.datadoghq.com/integrations/ecs_fargate/?tab=webui)
+- [Observability in Event-Driven Architechtures](https://www.datadoghq.com/architecture/observability-in-event-driven-architecture/)
 
 ## About AWS Integration
 
@@ -171,7 +172,6 @@ provider "datadog" {
   api_key = var.datadog_api_key
   app_key = var.datadog_app_key
 }
-
 ```
 
 ### 2. Create an AWS integration IAM policy and Role
@@ -238,7 +238,6 @@ resource "aws_iam_role_policy_attachment" "datadog_aws_integration_security_audi
   role       = aws_iam_role.datadog_aws_integration.name
   policy_arn = "arn:aws:iam::aws:policy/SecurityAudit"
 }
-
 ```
 
 ### 3. Set up the Datadog Log Forwarder (Lambda)
@@ -278,7 +277,6 @@ resource "aws_secretsmanager_secret_version" "datadog_api_key" {
 output "datadog_api_key" {
   value = aws_secretsmanager_secret.datadog_api_key.arn
 }
-
 ```
 
 Forwarder Configuration:
@@ -350,7 +348,6 @@ resource "aws_cloudwatch_log_subscription_filter" "datadog_ecs_validate_subscrip
   filter_pattern  = "" 
   destination_arn = var.datadog_forwarder_arn
 }
-
 ```
 
 ### Copy the Datadog Forwarder ARN
@@ -439,7 +436,6 @@ resource "datadog_integration_aws_account" "datadog_integration" {
     }
   }
 }
-
 ```
 
 ### Conclusion
@@ -679,7 +675,6 @@ resource "aws_security_group" "ecs_sg" {
     cidr_blocks = ["0.0.0.0/0"] # Needed for ECR, S3, Logs, etc.
   }
 }
-
 ```
 
 This configuration adds the Datadog agent container to the ECS task definition alongside the transformation container, allowing the agent to collect detailed metrics and logs. It uses AWS CloudWatch Logs for logging and requires the Datadog API key to be provided as an environment variable.
@@ -700,5 +695,4 @@ resource "aws_ecs_service" "datadog_agent_service" {
     assign_public_ip = true
   }
 }
-
 ```
