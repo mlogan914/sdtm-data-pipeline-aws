@@ -1,8 +1,32 @@
-# Datadog Integration for AWS Serverless Data Pipeline
+# Integrating Datadog with an AWS Serverless Data Pipeline
 
-- This document outlines how to integrate [Datadog](https://www.datadoghq.com/) with an AWS-based serverless data pipeline project for monitoring, alerting, and observability.
-- The project GitHub repo is [HERE](https://github.com/mlogan914/sdtm-data-pipeline-aws)
+This document outlines the integration of [Datadog](https://www.datadoghq.com/) with an AWS-based serverless data pipeline for enhanced monitoring, alerting, and observability. 
+
+The project GitHub repository is available [here](https://github.com/mlogan914/sdtm-data-pipeline-aws).
+
 ---
+
+## Table of Contents
+
+1. [Project Context](#project-context)  
+2. [Datadog Reference Documents](#datadog-reference-documents)  
+3. [About AWS Integration](#about-aws-integration)  
+   - [Default Collection Methods](#default-collection-methods)  
+   - [Other Collection Methods](#other-collection-methods)  
+   - [The Datadog Agent](#the-datadog-agent)  
+4. [Integration Steps](#integration-steps)  
+   - [1. Set Up a Datadog AWS Integration](#1-set-up-a-datadog-aws-integration)  
+   - [2. Enable CloudWatch Logs Forwarding (Optional but Recommended)](#2-enable-cloudwatch-logs-forwarding-optional-but-recommended)
+5. [Terraform Setup](#terraform-setup)  
+   - [Project Directory Structure](#project-directory-structure)  
+   - [Datadog Integration Using Terraform](#datadog-integration-using-terraform)  
+     - [1. Add the Datadog Provider](#1-add-the-datadog-provider-to-the-provider-configuration-in-the-datadog-module)  
+     - [2. Create an AWS Integration IAM Policy and Role](#2-create-an-aws-integration-iam-policy-and-role)  
+     - [3. Set up the Datadog Log Forwarder](#3-set-up-the-datadog-log-forwarder-lambda)
+         - [3a. Choosing Logs to Forward to Datadog](#choosing-logs-to-forward-to-datadog)
+     - [4. Set up AWS Integration](#4-set-up-aws-integration)
+6. [Appendix](#example-adding-datadog-agent-to-ecs-fargate-task-definitions)
+    - [Example: Adding Datadog Agent to ECS Fargate Task Definitions](#example-adding-datadog-agent-to-ecs-fargate-task-definitions)
 
 ## Project Context
 
@@ -15,12 +39,12 @@ Integrating Datadog provides performance monitoring, error tracking, and real-ti
 
 ## Datadog Reference Documents:
 
-- [Getting Stated with AWS](https://docs.datadoghq.com/getting_started/integrations/aws/#setup)
+- [Getting Started with AWS](https://docs.datadoghq.com/getting_started/integrations/aws/#setup)
 - [Integration for AWS Overview](https://docs.datadoghq.com/integrations/amazon_web_services/#overview)
 - [Forwarder Lambda Function](https://docs.datadoghq.com/logs/guide/forwarder/?tab=cloudformation)
 - [Datadog AWS IAM Policy](https://docs.datadoghq.com/integrations/amazon_web_services/?tab=manual#aws-iam-permissions)
 - [Amazon ECS on AWS Fargate](https://docs.datadoghq.com/integrations/ecs_fargate/?tab=webui)
-- [Observability in Event-Driven Architechtures](https://www.datadoghq.com/architecture/observability-in-event-driven-architecture/)
+- [Observability in Event-Driven Architectures](https://www.datadoghq.com/architecture/observability-in-event-driven-architecture/)
 
 ## About AWS Integration
 
@@ -47,7 +71,7 @@ Datadog recommends installing the Agent wherever possible, in addition to using 
 
 > **NOTE:** Although the Datadog agent is recommended for collecting metrics, logs, and traces from ECS containers, it is not required for my event-driven pipeline. In my case, the containers are short-lived tasks that don’t persist long enough to run an agent continuously. To run the Datadog agent persistently, an ECS replica service would be necessary, which isn’t appropriate for this use case.
 
-However, if you need to set up the Datadog agent in ECS Fargate for long-lived services, you can refer to the example in the appendix [HERE](#example-adding-datadog-agent-to-ecs-fargate-task-definitions).
+However, if you need to set up the Datadog agent in ECS Fargate for long-lived services, you can refer to the example in the appendix [here](#example-adding-datadog-agent-to-ecs-fargate-task-definitions).
 
 ## Integration Steps
 
@@ -177,7 +201,7 @@ provider "datadog" {
 ### 2. Create an AWS integration IAM policy and Role
 
 - To correctly set up the AWS Integration, you must attach the relevant IAM policies to the Datadog AWS Integration IAM Role in your AWS account
-- The AWS IAM permissions are currently documented [HERE](https://docs.datadoghq.com/integrations/amazon_web_services/?tab=manual#aws-iam-permissions)
+- The AWS IAM permissions are currently documented [here](https://docs.datadoghq.com/integrations/amazon_web_services/?tab=manual#aws-iam-permissions)
 
 Set up your Terraform configuration file using the example below as a base template. Ensure to update the following parameters before you apply the changes:
 
@@ -241,7 +265,7 @@ resource "aws_iam_role_policy_attachment" "datadog_aws_integration_security_audi
 ```
 
 ### 3. Set up the Datadog Log Forwarder (Lambda)
-- An overview of the Datadog Forwarder can be found [HERE](https://docs.datadoghq.com/logs/guide/forwarder/?tab=cloudformation)
+- An overview of the Datadog Forwarder can be found [here](https://docs.datadoghq.com/logs/guide/forwarder/?tab=cloudformation)
 
 - The Datadog Forwarder is an AWS Lambda function that ships logs from AWS to Datadog — in this case, specifically forwarding CloudWatch and S3 logs.
 
@@ -447,7 +471,7 @@ For further customization (e.g., dashboards, monitors, or custom metrics), refer
 
 ### Appendix
 
-#### Example: Adding Datadog Agent to ECS Fargate Task Definitions
+### Example: Adding Datadog Agent to ECS Fargate Task Definitions
 This example demonstrates how to set up the Datadog agent container alongside the transformation and validation containers in ECS Fargate. The Datadog agent container will run as a sidecar in the same task definition to collect detailed ECS task-level metrics, logs, and traces.
 
 > **NOTE:**: This would deploy the Datadog agent as a *persistent service* in ECS, suitable for long-lived services *but not* needed in an event-driven pipeline like mine.
@@ -679,7 +703,7 @@ resource "aws_security_group" "ecs_sg" {
 
 This configuration adds the Datadog agent container to the ECS task definition alongside the transformation container, allowing the agent to collect detailed metrics and logs. It uses AWS CloudWatch Logs for logging and requires the Datadog API key to be provided as an environment variable.
 
-### How to Enable Replica Service (if needed)
+### How to Enable Replica Service
 If you need the Datadog agent to persist across ECS Fargate tasks and have it continuously monitor your services, you would need to run it as part of a replica service in ECS:
 
 ```
@@ -696,3 +720,5 @@ resource "aws_ecs_service" "datadog_agent_service" {
   }
 }
 ```
+
+*** --- End of Document --- ***
