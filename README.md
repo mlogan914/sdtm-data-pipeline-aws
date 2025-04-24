@@ -192,70 +192,110 @@ GitHub Actions automates deployment of transformation scripts to AWS ECS, enabli
 
 ## Pipeline Execution Flow
 
+This section outlines the complete flow of the data processing pipeline, from development to data analysis.
+
+---
+
 ### 1. Initial Development Stage
+
 #### Development Workflow
-- Developers use UAT data to create and version base transformation scripts in GitHub.
-- CI/CD pipelines ensure code updates are deployed to AWS ECS.
+- Developers work with UAT data to build and version transformation scripts.
+- Scripts are maintained in GitHub to enable version control and collaboration.
+- CI/CD pipelines automate deployment of updated scripts to AWS ECS.
 
 #### Code Deployment
-- AWS ECS retrieves the latest transformation scripts from GitHub upon deployment.
+- Upon deployment, AWS ECS tasks pull the latest transformation scripts from GitHub.
+
 ---
+
 ### 2. Pipeline Trigger
+
 #### Raw Data Arrival
 - Raw production data is uploaded to a staging S3 bucket.
-- An **S3 event notification** triggers an **AWS Lambda** function, which initiates **AWS Step Functions** to start the pipeline.
+- An S3 event notification triggers an AWS Lambda function.
+- The Lambda function initiates a workflow managed by AWS Step Functions.
+
 ---
+
 ### 3. Data Quality Checks
-#### AWS Glue Crawler
-- Step Functions trigger an AWS Glue Crawler to crawl raw data and update the centralized metadata repository.
+
+#### Metadata Crawling
+- Step Functions trigger an AWS Glue Crawler to scan and catalog raw data.
+- Metadata is registered in the centralized AWS Glue Data Catalog.
 
 #### Quality Assurance
-- AWS Glue Data Quality checks are executed on the raw data:
-- **If checks fail**:
-  - Notifications are sent via AWS SNS.
-  - Processing stops until issues are resolved.
-- **If checks pass**:
-  - The pipeline proceeds to the next stage.
+- AWS Glue Data Quality checks are executed on the raw data.
+- If checks fail:
+  - Alerts are sent via Amazon SNS.
+  - Pipeline execution is paused until issues are resolved.
+- If checks pass:
+  - The pipeline continues to the transformation stage.
+
 ---
+
 ### 4. Data Transformation
+
 #### Processing
-- Step Functions trigger AWS ECS to execute transformation scripts on the raw data using custom code.
+- Step Functions trigger an AWS ECS task to execute transformation scripts on the raw data.
 
 #### Version Control
-- ECS tasks pull the latest version of scripts from GitHub for processing.
+- The ECS task ensures the most recent script versions from GitHub are used during processing.
+
 ---
+
 ### 5. Pinnacle21 Compliance Checks
+
 #### Validation
-- Step Functions trigger AWS ECS to run Pinnacle21 CLI for CDISC compliance checks on the transformed datasets.
+- Step Functions invoke an ECS task that runs the Pinnacle21 CLI to check for CDISC SDTM compliance.
 
 #### Outcome
-- **If checks fail**:
-  - Notifications are sent via AWS SNS.
-  - Logs and reports are stored in the Audit S3 bucket for review.
-- **If checks pass**:
-  - Compliance reports and logs are saved in the Audit S3 bucket.
-  - The pipeline proceeds to the output stage.
+- If checks fail:
+  - Notifications are sent via SNS.
+  - Compliance logs and reports are saved in the Audit S3 bucket.
+- If checks pass:
+  - Reports and logs are saved for audit.
+  - Pipeline proceeds to output generation.
+
 ---
+
 ### 6. Output
+
 #### Final Output
-- Step Functions orchestrate the upload of transformed, SDTM-compliant datasets to the output S3 bucket in multiple formats:
+- Step Functions coordinate the upload of SDTM-compliant datasets to the output S3 bucket.
+- Output formats include:
   - CSV
   - Parquet
   - XPT
+
 ---
+
 ### 7. Metadata Updates
+
 #### Destination Metadata
-- Step Functions trigger an AWS Lambda function to update the metadata repository for the transformed datasets.
+- An AWS Lambda function updates the metadata repository for the transformed datasets.
+
 ---
+
 ### 8. Data Analysis & Validation
-#### Querying with Athena
-- Amazon Athena is used to perform serverless SQL-based queries on the transformed SDTM datasets.
-- End users (e.g., biostatisticians, statistical programmers etc.,) can validate data integrity, check compliance, and generate reports.
+
+#### Athena Querying
+- Amazon Athena provides SQL-based, serverless querying over transformed SDTM datasets.
+- End users such as biostatisticians and statistical programmers can:
+  - Validate data accuracy and structure
+  - Check compliance status
+  - Generate analysis reports
+
 ---
-### 9. Data Access & PII Redaction (External to Step Functions Workflow)
+
+### 9. Data Access and PII Redaction (External to Step Functions)
+
 #### S3 Object Lambda
-- Wearable application data is ingested into an S3 bucket via custom scripts.
-- When a requester accesses the data, S3 Object Lambda is invoked to dynamically filter and redact PII from patient-reported data.
+- Wearable application data is ingested via custom scripts into an S3 bucket.
+- When accessed, S3 Object Lambda dynamically:
+  - Filters the response
+  - Redacts personally identifiable information (PII)
+  - Delivers a privacy-compliant version of the data
+
 
 ---
 
