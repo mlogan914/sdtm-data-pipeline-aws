@@ -85,70 +85,76 @@ This pipeline is a fully serverless data processing framework built using AWS se
 - **Athena** – Enables serverless SQL-based querying for end users.
 
 ### Infrastructure as Code (IaC)
-- Terraform – Used for provisioning scalable, reusable, and automated pipeline infrastructure.
+Terraform — Provisions scalable, reusable, and automated pipeline infrastructure, enabling consistent and repeatable deployments across environments.
 
 ### Observability with Datadog
 To ensure high observability, proactive issue detection, and streamlined debugging across this serverless architecture, Datadog was integrated into the pipeline.
 
-- **AWS Integration** – Datadog receives logs, metrics, and traces from AWS services such as Lambda, ECS, Step Functions, and CloudWatch.
-- **Log Forwarding** – Enables quick drill-down from metrics to raw logs for root cause analysis.
-- **Alerting** – Custom monitors and thresholds trigger alerts.
-- **Tagging & Tracing** – ECS and Lambda components include environment and pipeline-stage tags, allowing granular filtering and performance tracing.
+See the full setup instructions:
 
 📄[Datadog Integration Steps Document](docs/datadog_integration.md)
 
 #### Directory Structure
 ```
-├── data                                # Sample raw data
-├── docker                              # Docker files + scripts for transform and validate
-│   ├── transform                       # Transformation scripts
-│   │   ├── dm.py                       # Sample SDTM transformation script for Demographics (DM)
-│   │   ├── dockerfile                  # Transform task dockerfile
-│   │   └── requirements.txt            # Transform dependencies
-│   └── validate                        # Validation scripts
-│       ├── dockerfile                  # Validate task dockerfile
-│       └── run_p21.py                  # Sample P21 validation script
-└── terraform                           # Terraform main folder
-	├── athena                          # Athena module
-	│   ├── main.tf                     # Athena configuration
-	│   └── variables.tf                # Athena-related variables
-	├── ecs                             # ECS module
-	│   ├── main.tf                     # ECS configuration
-	│   ├── outputs.tf                  # ECS outputs
-	│   ├── roles.tf                    # IAM roles for ECS
-	│   └── variables.tf                # ECS-related variables
-	├── glue                            # AWS Glue module + scripts
-	│   ├── glue_data_quality.py        # Data quality check script for Glue
-	│   ├── main.tf                     # Glue configuration
-	│   ├── outputs.tf                  # Glue outputs
-	│   ├── roles.tf                    # IAM roles for Glue
-	│   └── variables.tf                # Glue-related variables
-	├── lambda                          # Lambda module + scripts
-	│   ├── lambda_function.py          # Lambda function code
-	│   ├── lambda_function.zip         # Zipped Lambda function for deployment
-	│   ├── main.tf                     # Lambda configuration
-	│   ├── outputs.tf                  # Lambda outputs
-	│   └── roles.tf                    # IAM roles for Lambda
-	├── main.tf                         # Terraform root module
-	├── providers.tf                    # AWS provider configurations for Terraform
-	├── s3                              # S3 module
-	│   ├── main.tf                     # S3 configuration
-	│   ├── outputs.tf                  # S3 outputs
-	│   └── variables.tf                # S3-related variables
-	├── sns                             # SNS module
-	│   ├── main.tf                     # SNS configuration
-	│   └── outputs.tf                  # SNS outputs
-	├── step_functions                  # AWS Step Functions module
-	│   ├── main.tf                     # Step Functions configuration
-	│   ├── roles.tf                    # IAM roles for Step Functions
-	│   └── variables.tf                # Step Functions-related variables
-	├── terraform.tfstate               # Terraform state file (tracked remotely in production) [REDACTED]
-	├── terraform.tfstate.backup        # Terraform state file backup [REDACTED]
-	├── terraform.tfvars                # Terraform variables file
-	├── variables.tf                    # Global Terraform variables
-	└── vpc                             # VPC module
-		├── main.tf                     # VPC configuration
-		└── outputs.tf                  # VPC outputs
+├── docs
+├── data                                # Input datasets for pipeline execution
+├── docker                              # Docker images and scripts for pipeline tasks
+│   ├── transform                       # Transformation logic
+│   │   ├── dm.py                       # SDTM transformation script for Demographics (DM)
+│   │   ├── dockerfile                  # Dockerfile for the transform task
+│   │   └── requirements.txt            # Python dependencies for transformation
+│   └── validate                        # Validation logic
+│       ├── dockerfile                  # Dockerfile for the validation task
+│       └── run_p21.py                  # Example P21 validation script
+└── terraform                           # Infrastructure as Code with Terraform
+    ├── main.tf                         # Root module
+    ├── providers.tf                    # Provider configurations (e.g., AWS)
+    ├── terraform.tfvars                # User-defined Terraform variables
+    ├── terraform.secrets.auto.tfvars   # Secret values injected at runtime
+    ├── terraform.tfstate               # Terraform state file (REDACTED)
+    ├── terraform.tfstate.backup        # Backup of the last state (REDACTED)
+    ├── variables.tf                    # Shared/global variables
+    ├── athena                          # Athena module for querying data
+    │   ├── main.tf
+    │   └── variables.tf
+    ├── datadog                         # Datadog observability and integration
+    │   ├── forwarder.tf                # Lambda Forwarder stack configuration
+    │   ├── kms.tf                      # KMS config for encrypting Datadog API key
+    │   ├── main.tf
+    │   ├── providers.tf
+    │   ├── roles.tf                    # IAM roles and permissions for Datadog
+    │   └── variables.tf
+    ├── ecs                             # ECS service module
+    │   ├── main.tf
+    │   ├── outputs.tf
+    │   ├── roles.tf
+    │   └── variables.tf
+    ├── glue                            # AWS Glue module for data transformation and quality
+    │   ├── glue_data_quality.py        # Glue script for data quality checks
+    │   ├── main.tf
+    │   ├── outputs.tf
+    │   ├── roles.tf
+    │   └── variables.tf
+    ├── lambda                          # AWS Lambda function module
+    │   ├── lambda_function.py          # Lambda source code
+    │   ├── lambda_function.zip         # Zipped Lambda for deployment
+    │   ├── main.tf
+    │   ├── outputs.tf
+    │   └── roles.tf
+    ├── s3                              # S3 buckets and configuration
+    │   ├── main.tf
+    │   ├── outputs.tf
+    │   └── variables.tf
+    ├── sns                             # SNS module for notifications
+    │   ├── main.tf
+    │   └── outputs.tf
+    ├── step_functions                  # AWS Step Functions orchestration
+    │   ├── main.tf
+    │   ├── roles.tf
+    │   └── variables.tf
+    └── vpc                             # VPC and networking configuration
+        ├── main.tf
+        └── outputs.tf
 ```
 ### Compliance Validation  
 - Pinnacle21 (previously known as OpenCDISC) – is a widely used validation tool in the clinical research that provides automated SDTM compliance verification. 
