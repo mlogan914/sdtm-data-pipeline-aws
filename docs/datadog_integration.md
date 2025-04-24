@@ -98,11 +98,9 @@ However, if you need to set up the Datadog agent in ECS Fargate for long-lived s
 
 ---
 
-### Terraform Setup (Completed)
+### Terraform Project Setup
 
-- See [The AWS Integration with Terraform](https://docs.datadoghq.com/integrations/guide/aws-terraform-setup/)
-
-#### Project Directory Structure
+#### Directory Structure Overview
 ```
 ├── data
 ├── docker
@@ -166,15 +164,26 @@ However, if you need to set up the Datadog agent in ECS Fargate for long-lived s
 │       └── outputs.tf
 └── terraform.tfstate
 ```
+> **NOTE:**  The following parameters are stored in `terraform.secrets.auto.tfvars`, which has been added to `.gitignore`: `datadog_api_key`,`datadog_app_key`, and `aws_account_id`.
 
-### Datadog Integration using Terraform
+### Datadog Integration with AWS via Terraform
+
+For more details, see the official [AWS Integration with Terraform guide](https://docs.datadoghq.com/integrations/guide/aws-terraform-setup/)
+
 ### 1. Add the Datadog provider to the provider configuration in the Datadog module:
 
-> **NOTE:** This is needed because provider source mappings are not inherited from the root module. Without this, Terraform will look for hashicorp/datadog (which doesn’t exist).
+> **NOTE:** Provider source mappings are not inherited from the root module. Without this, Terraform will look for `hashicorp/datadog`, which does not exist.
+
+#### Error Encountered:
+```
+Error: Failed to query available provider packages
+│ 
+│ Could not retrieve the list of available versions for provider hashicorp/datadog: provider registry registry.terraform.io does not have a provider named registry.terraform.io/hashicorp/datadog 
+```
+#### Solution:
+Explicitly define the Datadog provider inside the module’s `providers.tf` file:
 
 ```
-providers.tf
-
 # =============================================================
 # Terraform Configuration
 # =============================================================
@@ -191,14 +200,13 @@ terraform {
 # Provider Configuration
 # =============================================================
 
-# NOTE: This can also be set via the DD_API_KEY environment variable.
 provider "datadog" {
   api_key = var.datadog_api_key
   app_key = var.datadog_app_key
 }
 ```
 
-### 2. Create an AWS integration IAM policy and Role
+### 2. Create an AWS Integration IAM policy and Role
 
 - To correctly set up the AWS Integration, you must attach the relevant IAM policies to the Datadog AWS Integration IAM Role in your AWS account
 - The AWS IAM permissions are currently documented [here](https://docs.datadoghq.com/integrations/amazon_web_services/?tab=manual#aws-iam-permissions)
@@ -207,7 +215,7 @@ Set up your Terraform configuration file using the example below as a base templ
 
 - `AWS_PERMISSIONS_LIST`: The IAM policies needed by Datadog AWS integrations. The current list is available in the Datadog AWS integration documentation.
 
-> **NOTE:** Warning messages appear on the AWS integration tile in Datadog if you enable resource collection, but do not have the **AWS Security Audit Policy** attached to your Datadog IAM role.
+> **NOTE:** Warning messages will appear on the AWS integration tile in Datadog if resource collection is enabled without attaching the `AWS Security Audit Policy` to your `Datadog IAM role`.
 
 ```
 roles.tf
@@ -264,22 +272,22 @@ resource "aws_iam_role_policy_attachment" "datadog_aws_integration_security_audi
 }
 ```
 
-### 3. Set up the Datadog Log Forwarder (Lambda)
-- An overview of the Datadog Forwarder can be found [here](https://docs.datadoghq.com/logs/guide/forwarder/?tab=cloudformation)
+### 3. Set Up the Datadog Log Forwarder - Lambda
+An overview of the Datadog Forwarder can be found [here](https://docs.datadoghq.com/logs/guide/forwarder/?tab=cloudformation).
 
-- The Datadog Forwarder is an AWS Lambda function that ships logs from AWS to Datadog — in this case, specifically forwarding CloudWatch and S3 logs.
+The Datadog Forwarder is an AWS Lambda function that ships logs from AWS to Datadog — in this case, specifically forwarding CloudWatch and S3 logs.
 
-Install the Forwarder using the Terraform resource `aws_cloudformation_stack` as a wrapper on top of the provided CloudFormation template.
+To install the Forwarder, use the Terraform resource `aws_cloudformation_stack`, which acts as a wrapper on top of the provided CloudFormation template.
 
 Datadog recommends creating separate Terraform configurations:
+1. Use the first one to store the Datadog API key in the AWS Secrets Manager, and note down the secrets ARN from the output of `terraform apply`.
+> NOTE: This step isn't necessary if you're referencing the ARN directly in Terraform, as shown in the configuration below.
+2. Then, create a configuration for the forwarder and supply the secrets ARN through the `DdApiKeySecretArn` parameter.
+3. Finally, create a configuration to set up triggers on the Forwarder. **Third Configuration**: Configure the log group triggers for the Forwarder.
 
-- Use the first one to store the Datadog API key in the AWS Secrets Manager, and note down the secrets ARN from the output of apply.
-- Then, create a configuration for the forwarder and supply the secrets ARN through the DdApiKeySecretArn parameter.
-- Finally, create a configuration to set up triggers on the Forwarder.
+By separating the configurations for the API key and the Forwarder, you avoid having to provide the Datadog API key when updating the Forwarder. To update or upgrade the Forwarder in the future, simply reapply the Forwarder configuration.
 
-By separating the configurations of the API key and the forwarder, you do not have to provide the Datadog API key when updating the forwarder. To update or upgrade the forwarder in the future, apply the forwarder configuration again.
-
-KMS Configuration:
+KMS Configuration (Step 1):
 
 ```
 kms.tf
@@ -303,9 +311,9 @@ output "datadog_api_key" {
 }
 ```
 
-Forwarder Configuration:
+Forwarder Configuration (Steps 2 &  3):
 
-> **NOTE:** Subscription filters are not created automatically by the DatadogForwarder. Create them directly on a Log Group.
+> **NOTE:** Subscription filters are not created automatically by the Datadog Forwarder. Create them directly on a Log Group.
 
 ```
 forwarder.tf
@@ -721,4 +729,6 @@ resource "aws_ecs_service" "datadog_agent_service" {
 }
 ```
 
-*** --- End of Document --- ***
+---
+
+**End of Document**
