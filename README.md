@@ -1,12 +1,31 @@
-# Automated SDTM Data Pipeline on AWS (Custom Script-Based)- Serverless
+# Automated SDTM Data Pipeline on AWS 
+### (Exploratory Prototype: Custom Scripts + Step Functions)
+
+Exploratory prototype of a serverless SDTM data pipeline using AWS + custom scripts — foundation for future Blueprint as a Service (BaaS) templates.
 
 ## Overview
 
-This project presents a minimally viable concept pipeline that automates SDTM-compliant data transformation in clinical trial industries. It is designed to ingest raw clinical data from various sources, including Electronic Data Capture (EDC), labs, wearables, manual uploads, and APIs, converting it into CDISC SDTM datasets.
+This project is an early-stage, exploratory prototype designed to validate core patterns for a serverless SDTM data pipeline on AWS. While not production-ready, it lays the foundation for a future set of reusable, compliant infrastructure templates — what I call Blueprint as a Service (BaaS).
 
-> **Context:** SDTM (Study Data Tabulation Model) is a standardized format for organizing human clinical trial data. Developed by CDISC (Clinical Data Interchange Standards Consortium), it's used to structure and submit trial data to regulatory agencies like the FDA (Food & Drug Administration) and PMDA (Pharmaceuticals and Medical Devices Agency). SDTM improves data consistency, traceability, and interoperability across studies.
+This pipeline automates the transformation of raw clinical data into CDISC SDTM datasets using AWS-native services. It is built to simulate ingestion from common sources like Electronic Data Capture (EDC) systems, labs, wearables, manual uploads, and APIs.
 
----
+The focus of this prototype is to:
+- Explore cloud-native ETL orchestration patterns (e.g., Step Functions, Lambda, Glue)
+- Define modular transformation stages that can be swapped (e.g., Glue → DBT)
+- Test infrastructure-as-code deployment via Terraform
+- Serve as a launching point for more specialized, production-grade blueprints
+
+>   Note: This is not the final implementation of the BaaS templates. Rather, it’s one of several foundational experiments informing their design.
+
+## 📰 Related Article
+
+This project is part of a larger initiative to rethink clinical data infrastructure through reusable, compliant templates.
+
+Read more:
+👉 [Clinical Trial Data Needs a Platform Revolution — Not Just More SDTM Automation](https://medium.com/@mlogan914/clinical-data-needs-a-platform-revolution-not-just-more-automation-71584fd07b63)
+
+## SDTM Context
+SDTM (Study Data Tabulation Model) is a standardized format for organizing human clinical trial data. Developed by CDISC (Clinical Data Interchange Standards Consortium), it's used to structure and submit trial data to regulatory agencies like the FDA (Food & Drug Administration) and PMDA (Pharmaceuticals and Medical Devices Agency). SDTM improves data consistency, traceability, and interoperability across studies.
 
 ## Tools & Technologies Used:
 <div align="center">
@@ -92,9 +111,9 @@ To ensure high observability, proactive issue detection, and streamlined debuggi
 
 See the full setup instructions:
 
-📄[Datadog Integration Steps Document](docs/datadog_integration.md)
+📄[Datadog Integration Steps](docs/datadog_integration.md)
 
-#### Directory Structure
+### Directory Structure
 ```
 ├── docs
 ├── data                                # Input datasets for pipeline execution
