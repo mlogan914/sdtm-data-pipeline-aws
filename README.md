@@ -1,7 +1,5 @@
-# Automated SDTM Data Pipeline on AWS 
-### (Exploratory Prototype: Custom Scripts + Step Functions)
-
-Exploratory prototype of a serverless SDTM data pipeline using AWS + custom scripts — foundation for future Blueprint as a Service (BaaS) templates.
+# SDTM Serverless Pipeline Prototype: Step Functions + Custom Scripts
+Exploratory prototype of a serverless SDTM pipeline on AWS, using Step Functions and custom Python scripts — a foundation for future Blueprint as a Service (BaaS) templates.
 
 ## Overview
 
