@@ -1,5 +1,6 @@
-# SDTM Serverless Pipeline Prototype: Step Functions + Custom Scripts
-Exploratory prototype of a serverless SDTM pipeline on AWS, using Step Functions and custom Python scripts — a foundation for future Blueprint as a Service (BaaS) templates.
+# SDTM Pipeline Prototype - Serverless
+
+**Using:** Step Functions + Custom Scripts  
 
 ## Overview
 
